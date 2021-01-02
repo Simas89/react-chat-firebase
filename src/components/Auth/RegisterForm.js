@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { MAIN_UPDATE_FORM_INPUTS } from 'types/mainTypes';
 import {
 	Button,
 	TextField,
@@ -10,16 +12,27 @@ import {
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import StyledLink from 'components/common/StyledLink';
+import { StyledLink } from 'components/common';
 
 import firebase from 'config/firebase';
 import md5 from 'md5';
 
+import { motion } from 'framer-motion';
+
 const usersRef = firebase.database().ref('users');
 
+const formVarians = {
+	hidden: {
+		opacity: 0,
+	},
+	visible: {
+		opacity: 1,
+		transition: { delay: 0.1 },
+	},
+};
+
 const RegisterForm = () => {
-	const [name, setName] = React.useState('');
-	const [email, setEmail] = React.useState('');
+	const dispatch = useDispatch();
 	const [password, setPassword] = React.useState('');
 	const [password2, setPassword2] = React.useState('');
 	const [showPassword, setShowPassword] = React.useState(false);
@@ -31,9 +44,9 @@ const RegisterForm = () => {
 	const [isPassword2Error, setIsPassword2Error] = React.useState(false);
 	const [serverError, setServerError] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
-	// const [usersRef, setUsersRef] = React.useState(
-	// 	firebase.database().ref('users')
-	// );
+
+	const formInputs = useSelector((state) => state.formInputs);
+	const { name, email } = formInputs;
 
 	const nameMin = 3;
 	const nameMax = 15;
@@ -62,7 +75,7 @@ const RegisterForm = () => {
 		e.preventDefault();
 		let pass = true;
 
-		if (name.length < nameMin - 1 && pass) {
+		if (name.length < nameMin && pass) {
 			setIsNameError(true);
 			pass = false;
 		}
@@ -123,14 +136,22 @@ const RegisterForm = () => {
 	};
 
 	return (
-		<form onSubmit={submitHandler}>
+		<motion.form
+			onSubmit={submitHandler}
+			variants={formVarians}
+			initial="hidden"
+			animate="visible"
+		>
 			<TextField
 				onChange={(e) => {
 					if (
 						e.target.value.match(/^(?!\s)[a-zA-Z0-9]*$/) &&
 						e.target.value.length <= nameMax
 					)
-						setName(e.target.value);
+						dispatch({
+							type: MAIN_UPDATE_FORM_INPUTS,
+							payload: { field: 'name', value: e.target.value },
+						});
 				}}
 				value={name}
 				style={{ width: '100%' }}
@@ -150,7 +171,10 @@ const RegisterForm = () => {
 			<TextField
 				onChange={(e) => {
 					if (e.target.value.match(/^(?!\s)[a-zA-Z0-9-@.]*$/))
-						setEmail(e.target.value);
+						dispatch({
+							type: MAIN_UPDATE_FORM_INPUTS,
+							payload: { field: 'email', value: e.target.value },
+						});
 				}}
 				value={email}
 				style={{ width: '100%' }}
@@ -268,7 +292,7 @@ const RegisterForm = () => {
 					{serverError}
 				</Typography>
 			)}
-		</form>
+		</motion.form>
 	);
 };
 

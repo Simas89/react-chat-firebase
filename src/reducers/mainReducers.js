@@ -1,8 +1,10 @@
-export const firstReducer = (state = { value: 25 }, action) => {
+import { MAIN_UPDATE_FORM_INPUTS } from 'types/mainTypes';
+
+export const formInputsReducer = (state = { name: '', email: '' }, action) => {
 	switch (action.type) {
-		case 'TEST':
-			console.log('Test from reducer');
-			break;
+		case MAIN_UPDATE_FORM_INPUTS:
+			console.log(action.payload);
+			return { ...state, [action.payload.field]: action.payload.value };
 
 		default:
 			return state;

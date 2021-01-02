@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 import App from './components/App';
 import reportWebVitals from './reportWebVitals';
@@ -10,7 +11,6 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from 'styled-components';
 import 'fontsource-roboto';
 import theme from 'theme';
-// import firebase from 'firebase';
 
 ReactDOM.render(
 	<Provider store={store}>
@@ -18,7 +18,9 @@ ReactDOM.render(
 			<ThemeProvider theme={theme}>
 				<StylesProvider injectFirst>
 					<CssBaseline />
-					<App />
+					<BrowserRouter>
+						<App />
+					</BrowserRouter>
 				</StylesProvider>
 			</ThemeProvider>
 		</MuiThemeProvider>

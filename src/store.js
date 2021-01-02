@@ -1,18 +1,20 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { firstReducer } from './reducers/mainReducers';
+import { formInputsReducer } from './reducers/mainReducers';
+import { userReducer } from 'reducers/userReducers';
 
-const rootReducer = combineReducers({ firstReducer });
+const rootReducer = combineReducers({
+	formInputs: formInputsReducer,
+	user: userReducer,
+});
 
 const initialState = {};
 
 // const middleware = [thunk];
+// require('redux-immutable-state-invariant').default(),
 
-const middleware =
-	process.env.NODE_ENV !== 'production'
-		? [require('redux-immutable-state-invariant').default(), thunk]
-		: [thunk];
+const middleware = process.env.NODE_ENV !== 'production' ? [thunk] : [thunk];
 
 const store = createStore(
 	rootReducer,

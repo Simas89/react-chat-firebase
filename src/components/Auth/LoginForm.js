@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { MAIN_UPDATE_FORM_INPUTS } from 'types/mainTypes';
 import {
 	Button,
 	TextField,
@@ -10,18 +12,32 @@ import {
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import StyledLink from 'components/common/StyledLink';
+import { StyledLink } from 'components/common';
+import { motion } from 'framer-motion';
 
 import firebase from 'config/firebase';
 
+const formVarians = {
+	hidden: {
+		opacity: 0,
+	},
+	visible: {
+		opacity: 1,
+		transition: { delay: 0.1 },
+	},
+};
+
 const LoginForm = () => {
-	const [email, setEmail] = React.useState('');
+	const dispatch = useDispatch();
 	const [password, setPassword] = React.useState('');
 	const [showPassword, setShowPassword] = React.useState(false);
 	const [isEmailError, setIsEmailError] = React.useState(false);
 	const [isPasswordError, setIsPasswordError] = React.useState(false);
 	const [serverError, setServerError] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
+
+	const formInputs = useSelector((state) => state.formInputs);
+	const { email } = formInputs;
 
 	const pswMin = 6;
 
@@ -58,7 +74,12 @@ const LoginForm = () => {
 				.signInWithEmailAndPassword(email, password)
 				.then((signedInUser) => {
 					console.log(signedInUser);
-					setLoading(false);
+					// console.log(
+					// 	firebase
+					// 		.auth()
+					// 		.onAuthStateChanged((user) => console.log(user))
+					// );
+					// setLoading(false);
 				})
 				.catch((err) => {
 					setServerError(err.message);
@@ -68,11 +89,20 @@ const LoginForm = () => {
 	};
 
 	return (
-		<form onSubmit={submitHandler}>
+		<motion.form
+			onSubmit={submitHandler}
+			variants={formVarians}
+			initial="hidden"
+			animate="visible"
+		>
+			<StyledLink to="/">Home</StyledLink>
 			<TextField
 				onChange={(e) => {
 					if (e.target.value.match(/^(?!\s)[a-zA-Z0-9-@.]*$/))
-						setEmail(e.target.value);
+						dispatch({
+							type: MAIN_UPDATE_FORM_INPUTS,
+							payload: { field: 'email', value: e.target.value },
+						});
 				}}
 				value={email}
 				style={{ width: '100%' }}
@@ -158,7 +188,7 @@ const LoginForm = () => {
 					{serverError}
 				</Typography>
 			)}
-		</form>
+		</motion.form>
 	);
 };
 
