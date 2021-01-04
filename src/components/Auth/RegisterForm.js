@@ -13,10 +13,8 @@ import {
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { StyledLink } from 'components/common';
-
 import firebase from 'config/firebase';
 import md5 from 'md5';
-
 import { motion } from 'framer-motion';
 
 const usersRef = firebase.database().ref('users');
@@ -114,7 +112,7 @@ const RegisterForm = () => {
 						.then(() => {
 							setLoading(false);
 
-							saveUser(newUser).then((id) => console.log('USER SAVED!'));
+							saveUser(newUser).then(() => console.log('USER SAVED!'));
 						})
 						.catch((err) => {
 							setServerError(err.message);

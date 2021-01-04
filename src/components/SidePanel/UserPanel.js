@@ -1,13 +1,13 @@
 import React from 'react';
 import firebase from 'config/firebase';
 import { useSelector } from 'react-redux';
-import { Box, Button, Grid, Typography, Avatar } from '@material-ui/core';
+import { Box, Button, Typography, Avatar } from '@material-ui/core';
 import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import styled from 'styled-components';
 import { TooltipCustom } from 'components/common';
 
 const Wrap = styled.div`
-	padding: 10px;
 	color: white;
 	header {
 		display: flex;
@@ -27,7 +27,6 @@ const Wrap = styled.div`
 
 const UserPanel = () => {
 	const currentUser = useSelector((state) => state.user.currentUser);
-	console.log(currentUser);
 	const handleSignOut = () => {
 		firebase
 			.auth()
@@ -41,7 +40,7 @@ const UserPanel = () => {
 			<header>
 				<ForumOutlinedIcon fontSize="large" />
 				<Typography variant="h4" style={{ color: 'white' }}>
-					DevChat
+					{'<DevChat/>'}
 				</Typography>
 			</header>
 
@@ -51,7 +50,9 @@ const UserPanel = () => {
 				items={
 					<>
 						<Button>Change avatar</Button>
-						<Button onClick={handleSignOut}>Sign Out</Button>
+						<Button onClick={handleSignOut} endIcon={<ExitToAppIcon />}>
+							Sign Out
+						</Button>
 					</>
 				}
 			>

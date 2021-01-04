@@ -74,12 +74,6 @@ const LoginForm = () => {
 				.signInWithEmailAndPassword(email, password)
 				.then((signedInUser) => {
 					console.log(signedInUser);
-					// console.log(
-					// 	firebase
-					// 		.auth()
-					// 		.onAuthStateChanged((user) => console.log(user))
-					// );
-					// setLoading(false);
 				})
 				.catch((err) => {
 					setServerError(err.message);
@@ -95,7 +89,6 @@ const LoginForm = () => {
 			initial="hidden"
 			animate="visible"
 		>
-			<StyledLink to="/">Home</StyledLink>
 			<TextField
 				onChange={(e) => {
 					if (e.target.value.match(/^(?!\s)[a-zA-Z0-9-@.]*$/))

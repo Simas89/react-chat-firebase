@@ -4,7 +4,7 @@ import { setUser, clearUser } from 'actions/userActions';
 import { Switch, Route, useHistory } from 'react-router-dom';
 import ChatScreen from 'components/screens/ChatScreen';
 import AuthScreen from 'components/screens/AuthScreen';
-import { Background } from 'components/common';
+import { Background, SnackBarCustom } from 'components/common';
 import firebase from 'config/firebase';
 
 const App = () => {
@@ -14,8 +14,8 @@ const App = () => {
 	React.useEffect(() => {
 		firebase.auth().onAuthStateChanged((user) => {
 			if (user) {
-				history.push('/');
 				dispatch(setUser(user));
+				history.push('/');
 			} else {
 				history.push('/auth/login');
 				dispatch(clearUser());
@@ -24,6 +24,7 @@ const App = () => {
 	}, [dispatch, history]);
 	return (
 		<>
+			<SnackBarCustom />
 			<Background />
 			<Switch>
 				<Route path="/" exact component={ChatScreen} />

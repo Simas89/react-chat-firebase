@@ -1,12 +1,15 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { formInputsReducer } from './reducers/mainReducers';
+import { formInputsReducer, snackReducer } from './reducers/mainReducers';
 import { userReducer } from 'reducers/userReducers';
+import { channelReducer } from 'reducers/channelReducers';
 
 const rootReducer = combineReducers({
 	formInputs: formInputsReducer,
 	user: userReducer,
+	snack: snackReducer,
+	channel: channelReducer,
 });
 
 const initialState = {};

@@ -24,6 +24,15 @@ const theme = createMuiTheme({
 			disableRipple: true,
 		},
 	},
+	overrides: {
+		MuiButton: {
+			root: {
+				'&:hover': {
+					backgroundColor: 'inherit',
+				},
+			},
+		},
+	},
 });
 
 export default theme;
