@@ -21,7 +21,7 @@ const Wrap = styled.div`
 	}
 	.Mui-selected {
 		border-radius: 3px;
-		/* background-color: gray !important; */
+		background-color: ${(p) => p.theme.palette.primary.dark} !important;
 	}
 `;
 

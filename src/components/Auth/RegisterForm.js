@@ -106,11 +106,11 @@ const RegisterForm = () => {
 						.updateProfile({
 							displayName: name,
 							photoURL: `https://gravatar.com/avatar/${md5(
-								newUser.user.email
-							)}?d=identicon`,
+								name
+							)}?d=robohash`,
 						})
 						.then(() => {
-							setLoading(false);
+							// setLoading(false);
 
 							saveUser(newUser).then(() => console.log('USER SAVED!'));
 						})
@@ -151,6 +151,7 @@ const RegisterForm = () => {
 							payload: { field: 'name', value: e.target.value },
 						});
 				}}
+				autoFocus
 				value={name}
 				style={{ width: '100%' }}
 				variant="outlined"

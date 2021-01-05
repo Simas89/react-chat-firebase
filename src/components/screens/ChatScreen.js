@@ -14,6 +14,9 @@ const Wrap = styled.div`
 	/* border: 1px solid red; */
 	height: 100vh;
 	display: grid;
+	.MuiContainer-root {
+		display: flex;
+	}
 	.loader-box {
 		height: 100vh;
 	}
@@ -39,6 +42,7 @@ const ChatScreen = () => {
 					transition={{ delay: 0.5 }}
 				>
 					<Container maxWidth="xl" disableGutters>
+						<ColorPanel />
 						<Grid container>
 							<Grid item xs={2}>
 								<motion.div className="motion">
@@ -46,14 +50,10 @@ const ChatScreen = () => {
 								</motion.div>
 							</Grid>
 
-							<Grid item xs={2}>
-								<ColorPanel />
-							</Grid>
-
-							<Grid item xs={4}>
+							<Grid item xs={7}>
 								<Messages />
 							</Grid>
-							<Grid item xs={4}>
+							<Grid item xs={3}>
 								<MetaPanel />
 							</Grid>
 						</Grid>

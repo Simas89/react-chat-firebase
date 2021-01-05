@@ -97,6 +97,7 @@ const LoginForm = () => {
 							payload: { field: 'email', value: e.target.value },
 						});
 				}}
+				autoFocus
 				value={email}
 				style={{ width: '100%' }}
 				variant="outlined"

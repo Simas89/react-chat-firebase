@@ -25,6 +25,37 @@ const Wrap = styled.div`
 	}
 `;
 
+const AvatarReloaded = (currentUser) => {
+	const [status, setStatus] = React.useState(false);
+	let interval = React.useRef(0);
+
+	React.useEffect(() => {
+		const imageExists = (url, cb) => {
+			fetch(url, { method: 'HEAD' })
+				.then((res) => {
+					if (res.ok) {
+						cb(true);
+					} else {
+						cb(true);
+					}
+				})
+				.catch((err) => console.log('Error:', err));
+		};
+
+		interval.current = setInterval(() => {
+			imageExists(currentUser.photoURL, (res) => {
+				setStatus(res);
+			});
+		}, 1000);
+	}, [currentUser.photoURL]);
+
+	if (status) {
+		clearInterval(interval.current);
+	}
+
+	return <Avatar alt={currentUser.displayName} src={currentUser.photoURL} />;
+};
+
 const UserPanel = () => {
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const handleSignOut = () => {
@@ -35,6 +66,20 @@ const UserPanel = () => {
 				console.log('signed out!');
 			});
 	};
+
+	// console.log(currentUser.photoURL);
+
+	// React.useEffect(() => {
+	// 	const imageExists = (image_url) => {
+	// 		const http = new XMLHttpRequest();
+
+	// 		http.open('HEAD', image_url, false);
+	// 		http.send();
+
+	// 		return http.status != 404;
+	// 	};
+	// 	console.log(imageExists(currentUser.photoURL));
+	// }, []);
 	return (
 		<Wrap>
 			<header>
@@ -57,11 +102,11 @@ const UserPanel = () => {
 				}
 			>
 				<Box display="flex" flexGrow={0} margin="auto">
-					<Avatar
+					{/* <Avatar
 						alt={currentUser.displayName}
 						src={currentUser.photoURL}
-						className=""
-					/>
+					/> */}
+					{AvatarReloaded(currentUser)}
 					<Button
 						style={{ color: 'white' }}
 						disableElevation
