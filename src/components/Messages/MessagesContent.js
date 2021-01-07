@@ -17,9 +17,13 @@ const Wrap = styled(Paper)`
 
 const MessagesContent = ({ messagesRef }) => {
 	const [messages, setMessages] = React.useState([]);
-	const [loading, setLoading] = React.useState(false);
+	// const [loading, setLoading] = React.useState(false);
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
+
+	React.useEffect(() => {
+		setMessages([]);
+	}, [currentChannel]);
 
 	React.useEffect(() => {
 		const addListeners = (channelId) => {

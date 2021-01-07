@@ -19,6 +19,7 @@ const Wrap = styled.div`
 		`}
 
 	.right {
+		position: relative;
 		padding-left: 10px;
 		.meta {
 			display: flex;
@@ -35,6 +36,20 @@ const Wrap = styled.div`
 		}
 		.text {
 			border: 1px solid gray;
+		}
+	}
+	.image-card {
+		overflow: hidden;
+		border: 1px solid gray;
+		border-radius: 5px;
+		min-width: 200px;
+		max-width: 100%;
+
+		img {
+			width: 100%;
+			background-position: center;
+			background-size: cover;
+			margin-bottom: -6px;
 		}
 	}
 `;
@@ -55,6 +70,14 @@ const Message = ({ currentUser, message }) => {
 				</div>
 
 				<Typography>{message.content}</Typography>
+				{message.image && (
+					<div className="image-card">
+						<img
+							src={message.image}
+							alt={'uploadedimg' + message.user.name}
+						></img>
+					</div>
+				)}
 			</div>
 		</Wrap>
 	);

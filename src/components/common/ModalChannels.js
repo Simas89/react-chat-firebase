@@ -10,7 +10,7 @@ import {
 	Box,
 } from '@material-ui/core';
 
-export const CustomModal = ({ setOpen, channelsRef }) => {
+export const ModalChannels = ({ setOpen, channelsRef }) => {
 	const dispatch = useDispatch();
 	const [name, setName] = React.useState('');
 	const [about, setAbout] = React.useState('');

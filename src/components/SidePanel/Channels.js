@@ -6,7 +6,7 @@ import { Typography, IconButton, List, ListItem } from '@material-ui/core';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
-import { CustomModal } from 'components/common';
+import { ModalChannels } from 'components/common';
 import firebase from 'config/firebase';
 
 const channelsRef = firebase.database().ref('channels');
@@ -60,7 +60,7 @@ const Channels = () => {
 
 	return (
 		<Wrap>
-			{open && <CustomModal setOpen={setOpen} channelsRef={channelsRef} />}
+			{open && <ModalChannels setOpen={setOpen} channelsRef={channelsRef} />}
 			<div className="top-head">
 				<SyncAltIcon style={{ margin: 0 }} />
 				<Typography style={{ marginLeft: '8px' }} variant="body2">
