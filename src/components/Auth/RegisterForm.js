@@ -25,7 +25,7 @@ const formVarians = {
 	},
 	visible: {
 		opacity: 1,
-		transition: { delay: 0.1 },
+		transition: { delay: 0.2 },
 	},
 };
 

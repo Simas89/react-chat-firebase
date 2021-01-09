@@ -1,6 +1,7 @@
 import React from 'react';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 const Wrap = styled.div`
 	height: 100%;
@@ -13,7 +14,7 @@ const Wrap = styled.div`
 export const Loader = () => {
 	return (
 		<Wrap>
-			<div>
+			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 				<ScaleLoader
 					height="60px"
 					width="4px"
@@ -21,7 +22,7 @@ export const Loader = () => {
 					color="white"
 					loading={true}
 				/>
-			</div>
+			</motion.div>
 		</Wrap>
 	);
 };

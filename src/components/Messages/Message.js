@@ -40,7 +40,7 @@ const Wrap = styled.div`
 	}
 	.image-card {
 		overflow: hidden;
-		border: 1px solid gray;
+		border: 1px solid rgba(0, 0, 0, 0.3);
 		border-radius: 5px;
 		min-width: 200px;
 		max-width: 100%;

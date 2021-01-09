@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { Grid, Container, Paper } from '@material-ui/core';
 import { Route } from 'react-router-dom';
@@ -47,48 +48,58 @@ const Wrap = styled.div`
 const motionPaperVariants = {
 	high: {
 		height: 480,
-		transition: { type: 'spring', stiffness: 500, mass: 2, damping: 40 },
+		transition: { type: 'spring', stiffness: 300, mass: 2, damping: 60 },
 	},
 	low: {
 		height: 300,
-		transition: { type: 'spring', stiffness: 500, mass: 2, damping: 40 },
+		transition: { type: 'spring', stiffness: 300, mass: 2, damping: 60 },
+	},
+	fadeIn: {
+		opacity: 1,
+		transition: { type: 'tween', duration: 0.5, delay: 0.3 },
 	},
 };
 
 const AuthScreen = ({ location }) => {
 	const [page, setPage] = React.useState(location.pathname.split('/')[2]);
+	const showIntro = useSelector((state) => state.introAnimation.showIntro);
 
 	React.useEffect(() => {
 		setPage(location.pathname.split('/')[2]);
 	}, [location]);
+
 	return (
-		<Wrap>
-			<Container maxWidth="sm">
-				<Grid container justify="center">
-					<motion.div
-						style={{ width: '100%' }}
-						drag
-						dragConstraints={{
-							top: 0,
-							left: 0,
-							right: 0,
-							bottom: 0,
-						}}
-						dragElastic={0.1}
-						variants={motionPaperVariants}
-						animate={page === 'register' ? 'high' : 'low'}
-						elevation={7}
-					>
-						<Paper className="paper" elevation={10}>
-							<Grid item xs={12}>
-								<Route path="/auth/login" component={LoginForm} />
-								<Route path="/auth/register" component={RegisterForm} />
-							</Grid>
-						</Paper>
-					</motion.div>
-				</Grid>
-			</Container>
-		</Wrap>
+		!showIntro && (
+			<Wrap>
+				<Container maxWidth="sm">
+					<Grid container justify="center">
+						<motion.div
+							variants={motionPaperVariants}
+							initial={{ opacity: 0 }}
+							animate={!showIntro && 'fadeIn'}
+							style={{ width: '100%' }}
+						>
+							<motion.div
+								style={{ width: '100%' }}
+								variants={motionPaperVariants}
+								animate={page === 'register' ? 'high' : 'low'}
+								elevation={7}
+							>
+								<Paper className="paper" elevation={12}>
+									<Grid item xs={12}>
+										<Route path="/auth/login" component={LoginForm} />
+										<Route
+											path="/auth/register"
+											component={RegisterForm}
+										/>
+									</Grid>
+								</Paper>
+							</motion.div>
+						</motion.div>
+					</Grid>
+				</Container>
+			</Wrap>
+		)
 	);
 };
 

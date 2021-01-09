@@ -27,12 +27,14 @@ const Wrap = styled.div`
 
 const ChatScreen = () => {
 	const isLoading = useSelector((state) => state.user.isLoading);
+	const showIntro = useSelector((state) => state.introAnimation.showIntro);
 
 	// console.log(isLoading);
 	return (
 		<Wrap>
 			{isLoading ? (
 				<div className="loader-box">
+					{' '}
 					<Loader />
 				</div>
 			) : (

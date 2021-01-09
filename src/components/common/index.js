@@ -5,3 +5,4 @@ export * from './TooltipCustom';
 export * from './ModalChannels';
 export * from './ModalFile';
 export * from './SnackBarCustom';
+export * from './Logo';

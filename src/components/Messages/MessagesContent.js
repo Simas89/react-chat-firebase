@@ -15,27 +15,27 @@ const Wrap = styled(Paper)`
 	}
 `;
 
-const MessagesContent = ({ messagesRef }) => {
-	const [messages, setMessages] = React.useState([]);
-	// const [loading, setLoading] = React.useState(false);
-	const currentChannel = useSelector((state) => state.channel.currentChannel);
+const MessagesContent = ({ messages }) => {
+	// const [messages, setMessages] = React.useState([]);
+	// // const [loading, setLoading] = React.useState(false);
+	// const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
 
-	React.useEffect(() => {
-		setMessages([]);
-	}, [currentChannel]);
+	// React.useEffect(() => {
+	// 	setMessages([]);
+	// }, [currentChannel]);
 
-	React.useEffect(() => {
-		const addListeners = (channelId) => {
-			messagesRef.child(channelId).on('child_added', (snap) => {
-				setMessages((prevState) => [...prevState, snap.val()]);
-			});
-		};
+	// React.useEffect(() => {
+	// 	const addListeners = (channelId) => {
+	// 		messagesRef.child(channelId).on('child_added', (snap) => {
+	// 			setMessages((prevState) => [...prevState, snap.val()]);
+	// 		});
+	// 	};
 
-		if (currentUser && currentChannel) {
-			addListeners(currentChannel.id);
-		}
-	}, [currentUser, currentChannel, messagesRef]);
+	// 	if (currentUser && currentChannel) {
+	// 		addListeners(currentChannel.id);
+	// 	}
+	// }, [currentUser, currentChannel, messagesRef]);
 
 	// console.log(messages);
 

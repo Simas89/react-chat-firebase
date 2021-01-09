@@ -56,6 +56,7 @@ export const ModalFile = ({ setIsFileModalOpen, uploadFile }) => {
 								{file.name}
 							</Typography>
 						</Box>
+
 						<Box height="18px" />
 						<Box display="flex" justifyContent="space-between">
 							<Button

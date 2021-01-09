@@ -1,7 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { formInputsReducer, snackReducer } from './reducers/mainReducers';
+import {
+	formInputsReducer,
+	snackReducer,
+	introAnimationReducer,
+} from './reducers/mainReducers';
 import { userReducer } from 'reducers/userReducers';
 import { channelReducer } from 'reducers/channelReducers';
 
@@ -10,6 +14,7 @@ const rootReducer = combineReducers({
 	user: userReducer,
 	snack: snackReducer,
 	channel: channelReducer,
+	introAnimation: introAnimationReducer,
 });
 
 const initialState = {};

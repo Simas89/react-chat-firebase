@@ -1,13 +1,23 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { useTheme } from '@material-ui/core/styles';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import { Logo } from 'components/common';
 
 const Wrap = styled.div`
 	z-index: -1;
 	position: fixed;
-	background-color: ${(p) => p.theme.palette.background};
+	/* background-color: ${(p) => p.theme.palette.background.light}; */
+	/* background: ${(p) => p.theme.palette.background.light};
+	background: linear-gradient(
+		0deg,
+		${(p) => p.theme.palette.background.dark} 0%,
+		${(p) => p.theme.palette.background.light} 100%
+	); */
+
+	${(p) => p.theme.classBg}
 	height: 100vh;
 	width: 100vw;
 	.section {
@@ -16,12 +26,22 @@ const Wrap = styled.div`
 		height: 100vh;
 		width: 105vw;
 	}
+	.logo {
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		width: 100vw;
+		/* display: none; */
+	}
 `;
 
 const transition = {
 	type: 'spring',
 	stiffness: 220,
 	mass: 5,
+
 	get init() {
 		return {
 			type: this.type,
@@ -117,57 +137,67 @@ export const Background = () => {
 	const location = useLocation();
 	const theme = useTheme();
 
+	const showIntro = useSelector((state) => state.introAnimation.showIntro);
+
 	React.useEffect(() => {
 		setMode(location.pathname.split('/')[2]);
 	}, [location]);
 	return (
 		<Wrap className="section">
-			<motion.div
-				className="section"
-				style={{ backgroundColor: theme.palette.accent.orange }}
-				variants={right1}
-				initial="initial"
-				animate={mode === 'register' ? 'animate' : 'initial'}
-			>
-				<motion.div
-					className="section"
-					style={{ backgroundColor: theme.palette.accent.green }}
-					variants={right2}
-					initial="initial"
-					animate={mode === 'register' ? 'animate' : 'initial'}
-				>
+			{!showIntro ? (
+				<>
 					<motion.div
 						className="section"
-						style={{ backgroundColor: theme.palette.background }}
-						variants={right3}
+						style={{ backgroundColor: theme.palette.accent.orange }}
+						variants={right1}
 						initial="initial"
 						animate={mode === 'register' ? 'animate' : 'initial'}
-					></motion.div>
-				</motion.div>
-			</motion.div>
-			<motion.div
-				className="section"
-				style={{ backgroundColor: theme.palette.accent.orange }}
-				variants={left1}
-				initial="initial"
-				animate={mode === 'login' ? 'animate' : 'initial'}
-			>
-				<motion.div
-					className="section"
-					style={{ backgroundColor: theme.palette.accent.green }}
-					variants={left2}
-					initial="initial"
-					animate={mode === 'login' ? 'animate' : 'initial'}
-				>
+					>
+						<motion.div
+							className="section"
+							style={{ backgroundColor: theme.palette.accent.green }}
+							variants={right2}
+							initial="initial"
+							animate={mode === 'register' ? 'animate' : 'initial'}
+						>
+							<motion.div
+								className="section"
+								style={theme.classBg}
+								variants={right3}
+								initial="initial"
+								animate={mode === 'register' ? 'animate' : 'initial'}
+							></motion.div>
+						</motion.div>
+					</motion.div>
 					<motion.div
 						className="section"
-						style={{ backgroundColor: theme.palette.background }}
-						variants={left3}
+						style={{ backgroundColor: theme.palette.accent.orange }}
+						variants={left1}
 						initial="initial"
 						animate={mode === 'login' ? 'animate' : 'initial'}
-					></motion.div>
-				</motion.div>
-			</motion.div>
+					>
+						<motion.div
+							className="section"
+							style={{ backgroundColor: theme.palette.accent.green }}
+							variants={left2}
+							initial="initial"
+							animate={mode === 'login' ? 'animate' : 'initial'}
+						>
+							<motion.div
+								className="section"
+								style={theme.classBg}
+								variants={left3}
+								initial="initial"
+								animate={mode === 'login' ? 'animate' : 'initial'}
+							></motion.div>
+						</motion.div>
+					</motion.div>
+				</>
+			) : (
+				<div className="logo">
+					<Logo />
+				</div>
+			)}
 		</Wrap>
 	);
 };

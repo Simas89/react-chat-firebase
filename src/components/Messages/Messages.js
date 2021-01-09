@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import MessagesHeader from 'components/Messages/MessagesHeader';
 import MessageForm from 'components/Messages/MessageForm';
@@ -7,11 +8,9 @@ import { Grid } from '@material-ui/core';
 import firebase from 'config/firebase';
 
 const Wrap = styled.div`
-	background-color: ${(p) => p.theme.palette.white};
-	/* background-color: ${(p) => p.theme.palette.primary.main}; */
 	padding: 10px 20px 0 20px;
 	height: 100%;
-
+	background-color: ${(p) => p.theme.palette.white};
 	.container {
 		height: 100%;
 	}
@@ -20,6 +19,58 @@ const Wrap = styled.div`
 const messagesRef = firebase.database().ref('messages');
 
 const Messages = () => {
+	const [messages, setMessages] = React.useState([]);
+	const [messagesFiltered, setMessagesFiltered] = React.useState([]);
+	const [searchTerm, setSearchTerm] = React.useState('');
+	const currentChannel = useSelector((state) => state.channel.currentChannel);
+	const currentUser = useSelector((state) => state.user.currentUser);
+
+	React.useEffect(() => {
+		setMessages([]);
+	}, [currentChannel]);
+
+	React.useEffect(() => {
+		const addListeners = (channelId) => {
+			messagesRef.child(channelId).on('child_added', (snap) => {
+				setMessages((prevState) => [...prevState, snap.val()]);
+			});
+		};
+
+		if (currentUser && currentChannel) {
+			addListeners(currentChannel.id);
+		}
+	}, [currentUser, currentChannel]);
+
+	React.useEffect(() => {
+		const channelMessages = [...messages];
+		const regex = new RegExp(searchTerm, 'gi');
+		const searchResults = channelMessages.reduce((acc, message) => {
+			if (
+				(message.content && message.content.match(regex)) ||
+				message.user.name.match(regex)
+			) {
+				acc.push(message);
+			}
+			return acc;
+		}, []);
+		setMessagesFiltered(searchResults);
+	}, [searchTerm]);
+
+	const countUniqueUsers = () => {
+		const uniqueUsers = messages.reduce((acc, el) => {
+			if (!acc.includes(el.user.name)) {
+				acc.push(el.user.name);
+			}
+			return acc;
+		}, []);
+
+		return uniqueUsers;
+	};
+
+	const handleSearchChange = (e) => {
+		setSearchTerm(e.target.value);
+	};
+
 	return (
 		<Wrap>
 			<Grid
@@ -30,10 +81,16 @@ const Messages = () => {
 				wrap="nowrap"
 			>
 				<Grid item>
-					<MessagesHeader messagesRef={messagesRef} />
+					<MessagesHeader
+						messagesRef={messagesRef}
+						uniqueUsers={countUniqueUsers()}
+						handleSearchChange={handleSearchChange}
+					/>
 				</Grid>
 				<Grid item style={{ flexGrow: 1 }}>
-					<MessagesContent messagesRef={messagesRef} />
+					<MessagesContent
+						messages={searchTerm ? messagesFiltered : messages}
+					/>
 				</Grid>
 				<Grid item>
 					<MessageForm messagesRef={messagesRef} />

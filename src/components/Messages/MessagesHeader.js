@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {
 	Paper,
@@ -25,7 +26,8 @@ const Wrap = styled(Paper)`
 	}
 `;
 
-const MessagesHeader = () => {
+const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
+	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	return (
 		<Wrap elevation={8}>
 			<Box display="flex" alignItems="center" padding={0}>
@@ -34,12 +36,16 @@ const MessagesHeader = () => {
 				</IconButton>
 				<div>
 					<Typography variant="h5">
-						<strong>Channel</strong>
+						<strong>{currentChannel && currentChannel.name}</strong>
 					</Typography>
 
-					<Typography variant="body2">5 Users</Typography>
+					<Typography variant="body2">
+						{uniqueUsers.length}{' '}
+						{uniqueUsers.length === 1 ? 'User' : 'Users'}
+					</Typography>
 				</div>
 				<TextField
+					onChange={handleSearchChange}
 					id="outlined-basic"
 					variant="outlined"
 					placeholder="Search Messages"
