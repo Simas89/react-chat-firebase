@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
-import { SET_CHANNEL } from 'types/channelTypes';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
 import { Typography, IconButton, List, ListItem } from '@material-ui/core';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -23,6 +23,12 @@ const Wrap = styled.div`
 		border-radius: 3px;
 		background-color: ${(p) => p.theme.palette.primary.dark} !important;
 	}
+	.MuiList-root {
+		padding: 0;
+		.MuiListItem-root {
+			padding: 4px 0 4px 16px;
+		}
+	}
 `;
 
 const Channels = () => {
@@ -30,11 +36,16 @@ const Channels = () => {
 	const [channels, setChannels] = React.useState([]);
 	const [open, setOpen] = React.useState(false);
 	const [activeChannel, setActiveChannel] = React.useState('');
+	const currentChannel = useSelector((state) => state.channel.currentChannel);
 
 	const changeChannel = (channel) => {
 		dispatch({ type: SET_CHANNEL, payload: channel });
-		setActiveChannel(channel.id);
+		dispatch({ type: SET_CHANNEL_PRIVATE, payload: false });
 	};
+
+	React.useEffect(() => {
+		currentChannel && setActiveChannel(currentChannel.id);
+	}, [currentChannel]);
 
 	React.useEffect(() => {
 		let canInitialChannelSet = true;
@@ -64,7 +75,7 @@ const Channels = () => {
 			<div className="top-head">
 				<SyncAltIcon style={{ margin: 0 }} />
 				<Typography style={{ marginLeft: '8px' }} variant="body2">
-					CHANNELS({channels.length && channels.length})
+					CHANNELS ({channels.length && channels.length})
 				</Typography>
 
 				<IconButton
@@ -84,7 +95,9 @@ const Channels = () => {
 							onClick={() => changeChannel(el)}
 							key={el.id}
 						>
-							<Typography noWrap># {el.name}</Typography>
+							<Typography noWrap variant="body2">
+								# {el.name}
+							</Typography>
 						</ListItem>
 					))}
 				</List>

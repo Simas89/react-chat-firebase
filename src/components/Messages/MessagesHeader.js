@@ -27,16 +27,22 @@ const Wrap = styled(Paper)`
 `;
 
 const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
-	const currentChannel = useSelector((state) => state.channel.currentChannel);
+	const channel = useSelector((state) => state.channel);
+	const { currentChannel, isPrivate } = channel;
 	return (
 		<Wrap elevation={8}>
-			<Box display="flex" alignItems="center" padding={0}>
-				<IconButton>
-					<StarBorderIcon fontSize="large" />
-				</IconButton>
+			<Box display="flex" alignItems="center" padding={0} height="50px">
+				{!isPrivate && (
+					<IconButton>
+						<StarBorderIcon fontSize="large" />
+					</IconButton>
+				)}
 				<div>
 					<Typography variant="h5">
-						<strong>{currentChannel && currentChannel.name}</strong>
+						<strong>
+							{isPrivate ? '@' : '#'}
+							{currentChannel && currentChannel.name}
+						</strong>
 					</Typography>
 
 					<Typography variant="body2">

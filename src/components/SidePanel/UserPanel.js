@@ -66,20 +66,6 @@ const UserPanel = () => {
 				console.log('signed out!');
 			});
 	};
-
-	// console.log(currentUser.photoURL);
-
-	// React.useEffect(() => {
-	// 	const imageExists = (image_url) => {
-	// 		const http = new XMLHttpRequest();
-
-	// 		http.open('HEAD', image_url, false);
-	// 		http.send();
-
-	// 		return http.status != 404;
-	// 	};
-	// 	console.log(imageExists(currentUser.photoURL));
-	// }, []);
 	return (
 		<Wrap>
 			<header>
@@ -101,14 +87,13 @@ const UserPanel = () => {
 					</>
 				}
 			>
-				<Box display="flex" flexGrow={0} margin="auto">
-					{/* <Avatar
-						alt={currentUser.displayName}
-						src={currentUser.photoURL}
-					/> */}
+				<Box display="flex" margin="auto" alignItems="flex-end">
 					{AvatarReloaded(currentUser)}
 					<Button
-						style={{ color: 'white' }}
+						style={{
+							color: 'white',
+							height: '25px',
+						}}
 						disableElevation
 						disableRipple
 					>

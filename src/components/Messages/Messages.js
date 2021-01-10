@@ -54,7 +54,7 @@ const Messages = () => {
 			return acc;
 		}, []);
 		setMessagesFiltered(searchResults);
-	}, [searchTerm]);
+	}, [searchTerm, messages]);
 
 	const countUniqueUsers = () => {
 		const uniqueUsers = messages.reduce((acc, el) => {

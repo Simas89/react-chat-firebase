@@ -9,7 +9,7 @@ import * as serviceWorker from './serviceWorker';
 import { StylesProvider, MuiThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from 'styled-components';
-import 'fontsource-roboto';
+import '@fontsource/roboto';
 import theme from 'theme';
 
 ReactDOM.render(

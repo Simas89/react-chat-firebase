@@ -7,11 +7,13 @@ import {
 	introAnimationReducer,
 } from './reducers/mainReducers';
 import { userReducer } from 'reducers/userReducers';
+import { usersReducer } from 'reducers/usersReducers';
 import { channelReducer } from 'reducers/channelReducers';
 
 const rootReducer = combineReducers({
 	formInputs: formInputsReducer,
 	user: userReducer,
+	users: usersReducer,
 	snack: snackReducer,
 	channel: channelReducer,
 	introAnimation: introAnimationReducer,
