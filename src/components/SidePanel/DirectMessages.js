@@ -3,10 +3,12 @@ import firebase from 'config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_USERS, SET_USERS_ALL } from 'types/usersTypes';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
-import { Typography, List, ListItem } from '@material-ui/core';
+import { Typography, List, ListItem, Box } from '@material-ui/core';
 import MailIcon from '@material-ui/icons/Mail';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import styled from 'styled-components';
+import StarIcon from '@material-ui/icons/Star';
+import amber from '@material-ui/core/colors/amber';
 
 const StyledDiv = styled.div`
 	color: white;
@@ -26,8 +28,8 @@ const StyledDiv = styled.div`
 	}
 
 	.is-online {
-		margin-left: 10px;
-		font-size: 1rem;
+		margin-left: 6px;
+		font-size: 0.8rem;
 		color: white;
 	}
 `;
@@ -43,7 +45,8 @@ const DirectMessages = () => {
 	const users = useSelector((state) => state.users);
 	const [activeChannel, setActiveChannel] = React.useState('');
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const currentChannel = useSelector((state) => state.channel.currentChannel);
+	const channel = useSelector((state) => state.channel);
+	const { currentChannel, starred } = channel;
 
 	React.useEffect(() => {
 		currentChannel && setActiveChannel(currentChannel.id);
@@ -118,14 +121,9 @@ const DirectMessages = () => {
 	const getChannelId = (userId) => {
 		const currentUserId = currentUser.uid;
 		return userId < currentUserId
-			? `${userId}/${currentUserId}`
-			: `${currentUserId}/${userId}`;
+			? `${userId}${currentUserId}`
+			: `${currentUserId}${userId}`;
 	};
-
-	// const changeChannel = (channel) => {
-	// 	dispatch({ type: SET_CHANNEL, payload: channel });
-	// 	setActiveChannel(channel.id);
-	// };
 
 	return (
 		<StyledDiv>
@@ -144,12 +142,42 @@ const DirectMessages = () => {
 							button
 							onClick={() => changeChannel(el)}
 						>
-							<Typography variant="body2" noWrap>
-								{el.name}
-							</Typography>
-							{el.isOnline === 'online' && (
-								<FiberManualRecordIcon className="is-online" />
-							)}
+							<Box
+								display="flex"
+								justifyContent="center"
+								alignItems="center"
+							>
+								{currentChannel &&
+									starred.includes(
+										el.uid < currentUser.uid
+											? el.uid + currentUser.uid
+											: currentUser.uid + el.uid
+									) && (
+										<StarIcon
+											fontSize="small"
+											style={{
+												color: amber[500],
+											}}
+										/>
+									)}
+
+								<Typography noWrap>{el.name}</Typography>
+
+								{el.isOnline === 'online' && (
+									<FiberManualRecordIcon className="is-online" />
+								)}
+							</Box>
+
+							{/* <Box display="flex" justifyContent="center">
+									<StarIcon
+										fontSize="small"
+										style={{ color: amber[500] }}
+									/>
+									<Typography>{el.name}</Typography>
+									{el.isOnline === 'online' && (
+										<FiberManualRecordIcon className="is-online" />
+									)}
+								</Box> */}
 						</ListItem>
 					))}
 				</List>

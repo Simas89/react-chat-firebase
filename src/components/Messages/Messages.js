@@ -8,6 +8,7 @@ import { Grid } from '@material-ui/core';
 import firebase from 'config/firebase';
 
 const Wrap = styled.div`
+	margin-right: 8px;
 	padding: 10px 20px 0 20px;
 	height: 100%;
 	background-color: ${(p) => p.theme.palette.white};
@@ -18,6 +19,7 @@ const Wrap = styled.div`
 
 const messagesRef = firebase.database().ref('messages');
 
+let prev = '';
 const Messages = () => {
 	const [messages, setMessages] = React.useState([]);
 	const [messagesFiltered, setMessagesFiltered] = React.useState([]);
@@ -27,19 +29,35 @@ const Messages = () => {
 
 	React.useEffect(() => {
 		setMessages([]);
+		// messagesRef.off();
 	}, [currentChannel]);
 
 	React.useEffect(() => {
 		const addListeners = (channelId) => {
-			messagesRef.child(channelId).on('child_added', (snap) => {
+			messagesRef.child(channelId).on('value', function (snap) {
+				snap.val() && setMessages(parseObjToArray(snap.val()));
+				messagesRef.child(channelId).off('value');
+			});
+			messagesRef.child(channelId).on('child_changed', function (snap) {
 				setMessages((prevState) => [...prevState, snap.val()]);
 			});
+
+			prev && messagesRef.child(prev).off();
+			prev = channelId;
 		};
 
 		if (currentUser && currentChannel) {
 			addListeners(currentChannel.id);
 		}
 	}, [currentUser, currentChannel]);
+
+	const parseObjToArray = (obj) => {
+		let parsedMessages = [];
+		for (const [key, value] of Object.entries(obj)) {
+			parsedMessages.push({ ...value });
+		}
+		return parsedMessages;
+	};
 
 	React.useEffect(() => {
 		const channelMessages = [...messages];

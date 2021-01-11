@@ -27,7 +27,7 @@ export const snackReducer = (
 	}
 };
 
-export const introAnimationReducer = (state = { showIntro: false }, action) => {
+export const introAnimationReducer = (state = { showIntro: true }, action) => {
 	switch (action.type) {
 		case MAIN_SHOW_INTRO:
 			return { ...state, showIntro: false };

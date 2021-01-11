@@ -1,2 +1,3 @@
 export const SET_CHANNEL = 'SET_CHANNEL';
 export const SET_CHANNEL_PRIVATE = 'SET_CHANNEL_PRIVATE';
+export const SET_STARRED = 'SET_STARRED';

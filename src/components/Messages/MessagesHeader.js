@@ -1,5 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { SET_SNACK } from 'types/mainTypes';
+import { SET_STARRED } from 'types/channelTypes';
 import styled from 'styled-components';
 import {
 	Paper,
@@ -10,7 +12,10 @@ import {
 	IconButton,
 } from '@material-ui/core';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarIcon from '@material-ui/icons/Star';
 import SearchIcon from '@material-ui/icons/Search';
+import amber from '@material-ui/core/colors/amber';
+import firebase from 'config/firebase';
 
 const Wrap = styled(Paper)`
 	background-color: white;
@@ -26,17 +31,85 @@ const Wrap = styled(Paper)`
 	}
 `;
 
+const usersRef = firebase.database().ref('users');
+
 const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
+	const dispatch = useDispatch();
 	const channel = useSelector((state) => state.channel);
-	const { currentChannel, isPrivate } = channel;
+	const currentUser = useSelector((state) => state.user.currentUser);
+	const { currentChannel, isPrivate, starred } = channel;
+
+	React.useEffect(() => {
+		if (currentUser && currentChannel) {
+			updateStarred();
+		}
+	}, [currentUser, currentChannel]);
+
+	const toggleStarred = () => {
+		if (currentChannel && !starred.includes(currentChannel.id)) {
+			usersRef
+				.child(`${currentUser.uid}/starred`)
+				.update({
+					[currentChannel.id]: {
+						name: currentChannel.name,
+						details: currentChannel.details
+							? currentChannel.details
+							: null,
+
+						createdBy: {
+							avataer: currentChannel.createdBy
+								? currentChannel.createdBy.avataer
+								: null,
+							name: currentChannel.createdBy
+								? currentChannel.createdBy.name
+								: null,
+						},
+					},
+				})
+				.then(() => updateStarred());
+		} else if (currentChannel) {
+			usersRef
+				.child(`${currentUser.uid}/starred`)
+				.child(currentChannel.id)
+				.remove((err) => {
+					if (err) {
+						console.log(err);
+						dispatch({
+							type: SET_SNACK,
+							payload: {
+								open: true,
+								severity: 'error',
+								message: 'Error unstarring a channel',
+							},
+						});
+					}
+				})
+				.then(() => updateStarred());
+		}
+	};
+
+	const updateStarred = () => {
+		usersRef
+			.child(currentUser.uid)
+			.child('starred')
+			.once('value')
+			.then((data) => {
+				const channelIds = data.val() ? Object.keys(data.val()) : [];
+				dispatch({ type: SET_STARRED, payload: channelIds });
+			});
+	};
+
 	return (
 		<Wrap elevation={8}>
 			<Box display="flex" alignItems="center" padding={0} height="50px">
-				{!isPrivate && (
-					<IconButton>
+				<IconButton onClick={toggleStarred}>
+					{currentChannel && starred.includes(currentChannel.id) ? (
+						<StarIcon style={{ color: amber[500] }} fontSize="large" />
+					) : (
 						<StarBorderIcon fontSize="large" />
-					</IconButton>
-				)}
+					)}
+				</IconButton>
+
 				<div>
 					<Typography variant="h5">
 						<strong>
@@ -45,10 +118,12 @@ const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
 						</strong>
 					</Typography>
 
-					<Typography variant="body2">
-						{uniqueUsers.length}{' '}
-						{uniqueUsers.length === 1 ? 'User' : 'Users'}
-					</Typography>
+					{!isPrivate && (
+						<Typography variant="body2">
+							{uniqueUsers.length}{' '}
+							{uniqueUsers.length === 1 ? 'User' : 'Users'}
+						</Typography>
+					)}
 				</div>
 				<TextField
 					onChange={handleSearchChange}

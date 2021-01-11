@@ -53,7 +53,7 @@ export const ModalChannels = ({ setOpen, channelsRef }) => {
 				});
 			})
 			.catch((err) => {
-				console.log(err);
+				err && console.log(err);
 				handleClose();
 				dispatch({
 					type: SET_SNACK,

@@ -7,37 +7,20 @@ import Message from 'components/Messages/Message';
 
 const Wrap = styled(Paper)`
 	height: 100%;
-	padding: 0 10px;
+	padding: 0 0px 0 8px;
 	background-color: white;
 
 	.scroll-bars {
-		/* border: 1px solid red; */
+		/* div:nth-child(2) {
+			border: 1px solid red;
+			padding-right: 10px !important;
+		} */
+		/* padding: 50px !important; */
 	}
 `;
 
 const MessagesContent = ({ messages }) => {
-	// const [messages, setMessages] = React.useState([]);
-	// // const [loading, setLoading] = React.useState(false);
-	// const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
-
-	// React.useEffect(() => {
-	// 	setMessages([]);
-	// }, [currentChannel]);
-
-	// React.useEffect(() => {
-	// 	const addListeners = (channelId) => {
-	// 		messagesRef.child(channelId).on('child_added', (snap) => {
-	// 			setMessages((prevState) => [...prevState, snap.val()]);
-	// 		});
-	// 	};
-
-	// 	if (currentUser && currentChannel) {
-	// 		addListeners(currentChannel.id);
-	// 	}
-	// }, [currentUser, currentChannel, messagesRef]);
-
-	// console.log(messages);
 
 	const displayMessages = (messages) => {
 		if (messages.length > 0) {

@@ -13,6 +13,8 @@ const App = () => {
 	const dispatch = useDispatch();
 	const showIntro = useSelector((state) => state.introAnimation.showIntro);
 
+	// React.useEffect(()=>{initFirebase()},[])
+
 	React.useEffect(() => {
 		const timeout = setTimeout(() => {
 			dispatch({ type: MAIN_SHOW_INTRO });

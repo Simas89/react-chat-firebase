@@ -8,7 +8,7 @@ const Wrap = styled.div`
 	/* border: 1px solid red; */
 	position: relative;
 	border-radius: 5px;
-	margin: 10px 0;
+	margin: 8px 10px 8px 0;
 	padding: 10px;
 	display: flex;
 

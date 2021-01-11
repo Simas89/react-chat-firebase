@@ -85,7 +85,7 @@ const AuthScreen = ({ location }) => {
 								animate={page === 'register' ? 'high' : 'low'}
 								elevation={7}
 							>
-								<Paper className="paper" elevation={12}>
+								<Paper className="paper" elevation={20}>
 									<Grid item xs={12}>
 										<Route path="/auth/login" component={LoginForm} />
 										<Route
