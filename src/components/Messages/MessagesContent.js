@@ -21,6 +21,25 @@ const Wrap = styled(Paper)`
 
 const MessagesContent = ({ messages }) => {
 	const currentUser = useSelector((state) => state.user.currentUser);
+	const [pxToBottom, setPxToBottom] = React.useState(0);
+	const scrollBarRef = React.useRef(null);
+	const innerRef = React.useRef(null);
+
+	const calcPxToBottom = (scrollValue) => {
+		const outerHeight = scrollBarRef.current.getClientHeight();
+		const innerHeight = innerRef.current.clientHeight;
+		const isBottom = innerHeight - (outerHeight + scrollValue);
+
+		setPxToBottom(isBottom);
+	};
+
+	React.useEffect(() => {
+		triggerScrollDown();
+	}, [messages]);
+
+	const triggerScrollDown = () => {
+		scrollBarRef.current.scrollToBottom({ behavior: 'smooth' });
+	};
 
 	const displayMessages = (messages) => {
 		if (messages.length > 0) {
@@ -29,6 +48,7 @@ const MessagesContent = ({ messages }) => {
 					key={el.timestamp}
 					message={el}
 					currentUser={currentUser}
+					triggerScrollDown={triggerScrollDown}
 				/>
 			));
 		}
@@ -36,8 +56,13 @@ const MessagesContent = ({ messages }) => {
 
 	return (
 		<Wrap elevation={8}>
-			<Scrollbars className="scroll-bars">
-				{displayMessages(messages)}
+			<Scrollbars
+				className="scroll-bars"
+				onScroll={(val) => calcPxToBottom(val.target.scrollTop)}
+				universal={true}
+				ref={scrollBarRef}
+			>
+				<div ref={innerRef}>{displayMessages(messages)}</div>
 			</Scrollbars>
 		</Wrap>
 	);

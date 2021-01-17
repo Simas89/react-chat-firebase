@@ -43,6 +43,7 @@ const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
 		if (currentUser && currentChannel) {
 			updateStarred();
 		}
+		//eslint-disable-next-line
 	}, [currentUser, currentChannel]);
 
 	const toggleStarred = () => {

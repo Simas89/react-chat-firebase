@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_SNACK } from 'types/mainTypes';
 import {
+	CircularProgress,
 	IconButton,
 	InputAdornment,
 	Paper,
@@ -9,7 +10,7 @@ import {
 } from '@material-ui/core';
 import styled from 'styled-components';
 import SendIcon from '@material-ui/icons/Send';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import { ModalFile } from 'components/common';
 import firebase from 'config/firebase';
 import uuidv4 from 'uuid/v4';
@@ -20,14 +21,29 @@ const Wrap = styled(Paper)`
 
 const storageRef = firebase.storage().ref();
 
-const MessageForm = ({ messagesRef }) => {
+const MessageForm = ({ messagesRef, usersRef }) => {
 	const dispatch = useDispatch();
 	const [message, setMessage] = React.useState('');
+	const [file, setFile] = React.useState('');
+	const [fileCaption, setFileCaption] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
 	const [isFileModalOpen, setIsFileModalOpen] = React.useState(false);
 
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
+
+	React.useEffect(() => {
+		if (currentChannel) {
+			// console.log(extractUserId());
+		}
+	}, [currentChannel]);
+
+	const extractUserId = () => {
+		let str = currentChannel.id;
+		str = str.replace(currentUser.uid, '');
+
+		return str;
+	};
 
 	const sendMessage = () => {
 		if (message) {
@@ -51,6 +67,15 @@ const MessageForm = ({ messagesRef }) => {
 						},
 					});
 				});
+
+			if (currentChannel.id.length > 25) {
+				usersRef
+					.child(extractUserId())
+					.child('newMessages')
+					.child(currentChannel.id)
+
+					.set(firebase.database.ServerValue.increment(1));
+			}
 		}
 	};
 
@@ -73,7 +98,7 @@ const MessageForm = ({ messagesRef }) => {
 		return newMessage;
 	};
 
-	const uploadFile = (file) => {
+	const uploadFile = () => {
 		const pathToUpload = currentChannel.id;
 		const ref = messagesRef;
 		const filePath = `chat/public/${uuidv4()}.${file.type.split('/')[1]}`;
@@ -82,13 +107,21 @@ const MessageForm = ({ messagesRef }) => {
 			.child(filePath)
 			.put(file)
 			.then((snap) => {
-				setIsFileModalOpen(false);
 				snap.ref
 					.getDownloadURL()
-					.then((fileUrl) => sendFileMessage(fileUrl, ref, pathToUpload));
+					.then((fileUrl) =>
+						sendFileMessage(
+							{ fileUrl, caption: fileCaption || '' },
+							ref,
+							pathToUpload
+						)
+					);
+				setLoading(false);
+				setMessage('');
+				setFile('');
+				setFileCaption('');
 			})
 			.catch(() => {
-				setIsFileModalOpen(false);
 				dispatch({
 					type: SET_SNACK,
 					payload: {
@@ -97,14 +130,18 @@ const MessageForm = ({ messagesRef }) => {
 						message: 'Error uploading image',
 					},
 				});
+				setLoading(false);
+				setMessage('');
+				setFile('');
+				setFileCaption('');
 			});
 	};
 
-	const sendFileMessage = (fileUrl, ref, pathToUpload) => {
+	const sendFileMessage = (fileData, ref, pathToUpload) => {
 		// console.log(fileUrl, ref, pathToUpload);
 		ref.child(pathToUpload)
 			.push()
-			.set(createMessage(fileUrl))
+			.set(createMessage(fileData))
 			.then(() => {})
 			.catch((err) => {
 				console.log(err);
@@ -119,12 +156,25 @@ const MessageForm = ({ messagesRef }) => {
 			});
 	};
 
+	const sendHandler = () => {
+		if (file) {
+			uploadFile();
+			setLoading(true);
+		} else {
+			sendMessage();
+			setLoading(true);
+		}
+	};
+
 	return (
 		<Wrap elevation={8}>
 			{isFileModalOpen && (
 				<ModalFile
 					setIsFileModalOpen={setIsFileModalOpen}
-					uploadFile={uploadFile}
+					file={file}
+					setFile={setFile}
+					fileCaption={fileCaption}
+					setFileCaption={setFileCaption}
 				/>
 			)}
 			<TextField
@@ -136,20 +186,33 @@ const MessageForm = ({ messagesRef }) => {
 				rowsMax={5}
 				value={message}
 				name="message"
+				disabled={loading}
 				onChange={(e) => setMessage(e.target.value)}
 				InputProps={{
 					endAdornment: (
 						<InputAdornment position="end">
 							<IconButton
-								onClick={sendMessage}
-								disabled={!Boolean(message) || loading}
+								onClick={sendHandler}
+								disabled={(!file && !Boolean(message)) || loading}
 								color="primary"
 							>
 								<SendIcon />
 							</IconButton>
 							<IconButton onClick={() => setIsFileModalOpen(true)}>
-								<CloudUploadIcon />
+								<AddAPhotoIcon
+									style={{ color: file ? 'blue' : 'gray' }}
+								/>
 							</IconButton>
+						</InputAdornment>
+					),
+					startAdornment: (
+						<InputAdornment position="start">
+							{loading && (
+								<CircularProgress
+									size={30}
+									style={{ position: 'absolute' }}
+								/>
+							)}
 						</InputAdornment>
 					),
 				}}

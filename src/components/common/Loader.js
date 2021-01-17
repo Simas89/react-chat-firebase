@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
@@ -12,7 +13,8 @@ const Wrap = styled.div`
 `;
 
 export const Loader = () => {
-	return (
+	const showIntro = useSelector((state) => state.animations.showIntro);
+	return showIntro ? (
 		<Wrap>
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 				<ScaleLoader
@@ -24,5 +26,5 @@ export const Loader = () => {
 				/>
 			</motion.div>
 		</Wrap>
-	);
+	) : null;
 };

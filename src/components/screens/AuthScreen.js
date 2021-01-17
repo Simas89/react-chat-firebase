@@ -14,6 +14,18 @@ const Wrap = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	.pimpirim {
+		font-family: 'Hiddencocktails' !important;
+		font-size: 6rem;
+		/* border: 1px solid red; */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: white;
+		span {
+			user-select: none;
+		}
+	}
 
 	.paper {
 		background-color: ${(p) => p.theme.palette.white};
@@ -48,21 +60,46 @@ const Wrap = styled.div`
 const motionPaperVariants = {
 	high: {
 		height: 480,
-		transition: { type: 'spring', stiffness: 300, mass: 2, damping: 60 },
+		transition: {
+			type: 'spring',
+			stiffness: 1300,
+			mass: 2,
+			damping: 55,
+		},
 	},
 	low: {
 		height: 300,
-		transition: { type: 'spring', stiffness: 300, mass: 2, damping: 60 },
+		transition: {
+			type: 'spring',
+			stiffness: 1300,
+			mass: 2,
+			damping: 55,
+		},
 	},
 	fadeIn: {
 		opacity: 1,
-		transition: { type: 'tween', duration: 0.5, delay: 0.3 },
+		transition: { type: 'tween', duration: 0.6, delay: 0.8 },
+	},
+	pimPirim: {
+		y: 0,
+		opacity: 1,
+		transition: {
+			type: 'spring',
+			stiffness: 400,
+			mass: 2,
+			damping: 35,
+			restSpeed: 0.001,
+			restDelta: 0.001,
+			delay: 0.3,
+		},
 	},
 };
 
+const MotionPaper = motion.custom(Paper);
+
 const AuthScreen = ({ location }) => {
 	const [page, setPage] = React.useState(location.pathname.split('/')[2]);
-	const showIntro = useSelector((state) => state.introAnimation.showIntro);
+	const showIntro = useSelector((state) => state.animations.showIntro);
 
 	React.useEffect(() => {
 		setPage(location.pathname.split('/')[2]);
@@ -72,6 +109,20 @@ const AuthScreen = ({ location }) => {
 		!showIntro && (
 			<Wrap>
 				<Container maxWidth="sm">
+					<motion.div
+						variants={motionPaperVariants}
+						className="pimpirim"
+						initial={{ y: -800, opacity: 0 }}
+						animate="pimPirim"
+						// transition={{
+						// 	type: 'spring',
+						// 	mass: 2,
+						// 	stiffness: 200,
+						// 	damping: 20,
+						// }}
+					>
+						<span>PimPirim</span>
+					</motion.div>
 					<Grid container justify="center">
 						<motion.div
 							variants={motionPaperVariants}
@@ -79,22 +130,21 @@ const AuthScreen = ({ location }) => {
 							animate={!showIntro && 'fadeIn'}
 							style={{ width: '100%' }}
 						>
-							<motion.div
+							<MotionPaper
+								className="paper"
+								elevation={20}
 								style={{ width: '100%' }}
 								variants={motionPaperVariants}
 								animate={page === 'register' ? 'high' : 'low'}
-								elevation={7}
 							>
-								<Paper className="paper" elevation={20}>
-									<Grid item xs={12}>
-										<Route path="/auth/login" component={LoginForm} />
-										<Route
-											path="/auth/register"
-											component={RegisterForm}
-										/>
-									</Grid>
-								</Paper>
-							</motion.div>
+								<Grid item xs={12}>
+									<Route path="/auth/login" component={LoginForm} />
+									<Route
+										path="/auth/register"
+										component={RegisterForm}
+									/>
+								</Grid>
+							</MotionPaper>
 						</motion.div>
 					</Grid>
 				</Container>

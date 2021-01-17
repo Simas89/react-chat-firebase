@@ -20,6 +20,7 @@ const Wrap = styled.div`
 	${(p) => p.theme.classBg}
 	height: 100vh;
 	width: 100vw;
+
 	.section {
 		position: fixed;
 		position: absolute;
@@ -48,6 +49,7 @@ const transition = {
 			stiffness: this.stiffness,
 			mass: this.mass,
 			damping: 105,
+			delay: 0.3,
 		};
 	},
 	get anim() {
@@ -55,7 +57,7 @@ const transition = {
 			type: this.type,
 			stiffness: this.stiffness,
 			mass: this.mass,
-			delay: 0.6,
+			delay: 1,
 			damping: 55,
 		};
 	},
@@ -91,16 +93,6 @@ const right3 = {
 		transition: transition.anim,
 	},
 };
-// const right4 = {
-// 	initial: {
-// 		x: '105vw',
-// 		transition: transition.init,
-// 	},
-// 	animate: {
-// 		x: '20%',
-// 		transition: transition.anim,
-// 	},
-// };
 const left1 = {
 	initial: {
 		x: '-125vw',
@@ -137,7 +129,7 @@ export const Background = () => {
 	const location = useLocation();
 	const theme = useTheme();
 
-	const showIntro = useSelector((state) => state.introAnimation.showIntro);
+	const showIntro = useSelector((state) => state.animations.showIntro);
 
 	React.useEffect(() => {
 		setMode(location.pathname.split('/')[2]);

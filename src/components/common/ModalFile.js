@@ -5,22 +5,26 @@ import {
 	Button,
 	Dialog,
 	Box,
-	CircularProgress,
+	TextField,
 } from '@material-ui/core';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-export const ModalFile = ({ setIsFileModalOpen, uploadFile }) => {
-	const [file, setFile] = React.useState('');
-	const [loading, setLoading] = React.useState(false);
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 
+export const ModalFile = ({
+	setIsFileModalOpen,
+	file,
+	setFile,
+	fileCaption,
+	setFileCaption,
+}) => {
 	const handleClose = () => {
 		setIsFileModalOpen(false);
 	};
 
-	const submitHandler = (e) => {
-		e.preventDefault();
-		setLoading(true);
-		uploadFile(file);
+	const handleClear = () => {
+		setFile('');
+		setFileCaption('');
+		setIsFileModalOpen(false);
 	};
 
 	return (
@@ -34,10 +38,14 @@ export const ModalFile = ({ setIsFileModalOpen, uploadFile }) => {
 			>
 				<Typography variant="h6">Upload an Image</Typography>
 
-				<form onSubmit={submitHandler}>
+				<form onSubmit={handleClose}>
 					<Box display="flex" flexDirection="column" justify="flex-end">
 						<Box height="18px" />
-						<Box display="flex" alignItems="center">
+						<Box
+							display="flex"
+							flexDirection="column"
+							alignItems="flex-start"
+						>
 							<input
 								style={{ display: 'none' }}
 								accept="image/*"
@@ -55,6 +63,17 @@ export const ModalFile = ({ setIsFileModalOpen, uploadFile }) => {
 							<Typography noWrap style={{ marginLeft: '10px' }}>
 								{file.name}
 							</Typography>
+							<TextField
+								onChange={(e) => setFileCaption(e.target.value)}
+								value={fileCaption}
+								style={{ width: '100%' }}
+								variant="outlined"
+								type="text"
+								label="Image caption"
+								id="image-caption"
+								margin="dense"
+								size="small"
+							/>
 						</Box>
 
 						<Box height="18px" />
@@ -64,18 +83,12 @@ export const ModalFile = ({ setIsFileModalOpen, uploadFile }) => {
 								autoFocus
 								variant="contained"
 								color="primary"
-								endIcon={<CloudUploadIcon />}
-								disabled={!Boolean(file) || loading}
+								endIcon={<AttachFileIcon />}
+								disabled={!Boolean(file)}
 							>
-								Upload
-								{loading && (
-									<CircularProgress
-										size={30}
-										style={{ position: 'absolute' }}
-									/>
-								)}
+								Attach
 							</Button>
-							<Button autoFocus onClick={handleClose} color="primary">
+							<Button autoFocus onClick={handleClear} color="primary">
 								Cancel
 							</Button>
 						</Box>

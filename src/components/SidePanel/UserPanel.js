@@ -1,16 +1,35 @@
 import React from 'react';
 import firebase from 'config/firebase';
 import { useSelector } from 'react-redux';
-import { Box, Button, Typography, Avatar } from '@material-ui/core';
-import ForumOutlinedIcon from '@material-ui/icons/ForumOutlined';
+import { Box, Button, Avatar, Grid, Typography } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import styled from 'styled-components';
-import { TooltipCustom } from 'components/common';
+import { TooltipCustom, ModalAvatar } from 'components/common';
 
 const Wrap = styled.div`
-	color: white;
+	width: 350px;
+
 	header {
 		display: flex;
+		font-family: 'Hiddencocktails' !important;
+		font-size: 4rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		span {
+			z-index: 10;
+			user-select: none;
+			background: -webkit-linear-gradient(
+				${(p) => p.theme.palette.background.light},
+				${(p) => p.theme.palette.background.dark}
+			);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+			&:hover {
+				cursor: pointer;
+			}
+		}
 	}
 	.user {
 		&:hover {
@@ -31,15 +50,16 @@ const AvatarReloaded = (currentUser) => {
 
 	React.useEffect(() => {
 		const imageExists = (url, cb) => {
-			fetch(url, { method: 'HEAD' })
-				.then((res) => {
-					if (res.ok) {
-						cb(true);
-					} else {
-						cb(true);
-					}
-				})
-				.catch((err) => console.log('Error:', err));
+			if (!url.includes('firebase'))
+				fetch(url, { method: 'HEAD' })
+					.then((res) => {
+						if (res.ok) {
+							cb(true);
+						} else {
+							cb(true);
+						}
+					})
+					.catch(() => {});
 		};
 
 		interval.current = setInterval(() => {
@@ -53,11 +73,19 @@ const AvatarReloaded = (currentUser) => {
 		clearInterval(interval.current);
 	}
 
-	return <Avatar alt={currentUser.displayName} src={currentUser.photoURL} />;
+	return (
+		<Avatar
+			style={{ height: '80px', width: '80px' }}
+			alt={currentUser.displayName}
+			src={currentUser.photoURL}
+		/>
+	);
 };
 
 const UserPanel = () => {
+	const [isModal, setIsModal] = React.useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
+
 	const handleSignOut = () => {
 		firebase
 			.auth()
@@ -68,47 +96,62 @@ const UserPanel = () => {
 	};
 	return (
 		<Wrap>
+			{isModal && <ModalAvatar setIsModal={setIsModal} />}
 			<header>
-				<ForumOutlinedIcon fontSize="large" />
-				<Typography variant="h4" style={{ color: 'white' }}>
-					{'<DevChat/>'}
-				</Typography>
+				<span className="pimpirim">PimPirim</span>
 			</header>
 
-			<TooltipCustom
-				placement="bottom-start"
-				arrow={false}
-				items={
-					<>
-						<Button>Change avatar</Button>
-						<Button onClick={handleSignOut} endIcon={<ExitToAppIcon />}>
-							Sign Out
-						</Button>
-					</>
-				}
-			>
-				<Box display="flex" margin="auto" alignItems="flex-end">
-					{AvatarReloaded(currentUser)}
-					<Button
-						style={{
-							color: 'white',
-							height: '25px',
-						}}
-						disableElevation
-						disableRipple
+			<Grid container>
+				<Grid item>
+					<TooltipCustom
+						placement="bottom-start"
+						arrow={false}
+						items={
+							<>
+								<Button onClick={() => setIsModal(true)}>
+									Change avatar
+								</Button>
+								<Button
+									onClick={handleSignOut}
+									endIcon={<ExitToAppIcon />}
+								>
+									Sign Out
+								</Button>
+							</>
+						}
 					>
-						{currentUser.displayName}
-						<span
-							style={{
-								fontSize: '.5rem',
-								marginLeft: '5px',
-							}}
+						<Box
+							display="flex"
+							margin="auto"
+							alignItems="flex-end"
+							style={{ marginRight: 'auto' }}
 						>
-							▼
-						</span>
-					</Button>
-				</Box>
-			</TooltipCustom>
+							{AvatarReloaded(currentUser)}
+							<Button
+								style={{
+									color: 'black',
+									height: '25px',
+								}}
+								disableElevation
+								disableRipple
+							>
+								<Typography variant="h6" color="textPrimary">
+									{currentUser.displayName}
+								</Typography>
+								<span
+									style={{
+										fontSize: '.5rem',
+										marginLeft: '5px',
+										color: 'rgba(0,0,0,86)',
+									}}
+								>
+									▼
+								</span>
+							</Button>
+						</Box>
+					</TooltipCustom>
+				</Grid>
+			</Grid>
 		</Wrap>
 	);
 };

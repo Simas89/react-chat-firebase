@@ -4,7 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
 	formInputsReducer,
 	snackReducer,
-	introAnimationReducer,
+	animationsReducer,
 } from './reducers/mainReducers';
 import { userReducer } from 'reducers/userReducers';
 import { usersReducer } from 'reducers/usersReducers';
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
 	users: usersReducer,
 	snack: snackReducer,
 	channel: channelReducer,
-	introAnimation: introAnimationReducer,
+	animations: animationsReducer,
 });
 
 const initialState = {};

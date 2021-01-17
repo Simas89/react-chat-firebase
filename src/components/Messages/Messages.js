@@ -1,14 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { MAIN_ANIMATE_MESSAGE } from 'types/mainTypes';
 import styled from 'styled-components';
 import MessagesHeader from 'components/Messages/MessagesHeader';
 import MessageForm from 'components/Messages/MessageForm';
 import MessagesContent from 'components/Messages/MessagesContent';
 import { Grid } from '@material-ui/core';
 import firebase from 'config/firebase';
+import { motion } from 'framer-motion';
 
-const Wrap = styled.div`
-	margin-right: 8px;
+const StyledDiv = styled.div`
+	/* margin-right: 8px; */
 	padding: 10px 20px 0 20px;
 	height: 100%;
 	background-color: ${(p) => p.theme.palette.white};
@@ -17,10 +19,14 @@ const Wrap = styled.div`
 	}
 `;
 
-const messagesRef = firebase.database().ref('messages');
+const MotionStyledDiv = motion.custom(StyledDiv);
+
+const messagesRef = firebase.database().ref('/messages/');
+const usersRef = firebase.database().ref('/users/');
 
 let prev = '';
 const Messages = () => {
+	const dispatch = useDispatch();
 	const [messages, setMessages] = React.useState([]);
 	const [messagesFiltered, setMessagesFiltered] = React.useState([]);
 	const [searchTerm, setSearchTerm] = React.useState('');
@@ -29,18 +35,22 @@ const Messages = () => {
 
 	React.useEffect(() => {
 		setMessages([]);
-		// messagesRef.off();
-	}, [currentChannel]);
+		dispatch({ type: MAIN_ANIMATE_MESSAGE, payload: false });
+	}, [currentChannel, dispatch]);
 
 	React.useEffect(() => {
 		const addListeners = (channelId) => {
-			messagesRef.child(channelId).on('value', function (snap) {
+			messagesRef.child(channelId).once('value', function (snap) {
 				snap.val() && setMessages(parseObjToArray(snap.val()));
 				messagesRef.child(channelId).off('value');
+				dispatch({ type: MAIN_ANIMATE_MESSAGE, payload: true });
 			});
-			messagesRef.child(channelId).on('child_changed', function (snap) {
-				setMessages((prevState) => [...prevState, snap.val()]);
-			});
+			messagesRef
+				.child(channelId)
+				.limitToLast(1)
+				.on('child_added', (snap) => {
+					setMessages((prevState) => [...prevState, snap.val()]);
+				});
 
 			prev && messagesRef.child(prev).off();
 			prev = channelId;
@@ -49,10 +59,11 @@ const Messages = () => {
 		if (currentUser && currentChannel) {
 			addListeners(currentChannel.id);
 		}
-	}, [currentUser, currentChannel]);
+	}, [currentUser, currentChannel, dispatch]);
 
 	const parseObjToArray = (obj) => {
 		let parsedMessages = [];
+		//eslint-disable-next-line
 		for (const [key, value] of Object.entries(obj)) {
 			parsedMessages.push({ ...value });
 		}
@@ -72,6 +83,7 @@ const Messages = () => {
 			return acc;
 		}, []);
 		setMessagesFiltered(searchResults);
+		//eslint-disable-next-line
 	}, [searchTerm, messages]);
 
 	const countUniqueUsers = () => {
@@ -90,7 +102,7 @@ const Messages = () => {
 	};
 
 	return (
-		<Wrap>
+		<MotionStyledDiv>
 			<Grid
 				container
 				className="container"
@@ -111,10 +123,10 @@ const Messages = () => {
 					/>
 				</Grid>
 				<Grid item>
-					<MessageForm messagesRef={messagesRef} />
+					<MessageForm messagesRef={messagesRef} usersRef={usersRef} />
 				</Grid>
 			</Grid>
-		</Wrap>
+		</MotionStyledDiv>
 	);
 };
 

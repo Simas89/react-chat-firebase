@@ -4,5 +4,6 @@ export * from './Loader';
 export * from './TooltipCustom';
 export * from './ModalChannels';
 export * from './ModalFile';
+export * from './ModalAvatar';
 export * from './SnackBarCustom';
 export * from './Logo';

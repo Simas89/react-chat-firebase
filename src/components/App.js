@@ -11,7 +11,7 @@ import firebase from 'config/firebase';
 const App = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
-	const showIntro = useSelector((state) => state.introAnimation.showIntro);
+	const showIntro = useSelector((state) => state.animations.showIntro);
 
 	// React.useEffect(()=>{initFirebase()},[])
 
