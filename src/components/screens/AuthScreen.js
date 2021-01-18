@@ -6,6 +6,7 @@ import { Route } from 'react-router-dom';
 import LoginForm from 'components/Auth/LoginForm';
 import RegisterForm from 'components/Auth/RegisterForm';
 import { motion } from 'framer-motion';
+import RegisterWithGoogle from 'components/Auth/RegisterWithGoogle';
 
 // import firebase from 'config/firebase';
 
@@ -145,6 +146,7 @@ const AuthScreen = ({ location }) => {
 									/>
 								</Grid>
 							</MotionPaper>
+							<RegisterWithGoogle />
 						</motion.div>
 					</Grid>
 				</Container>

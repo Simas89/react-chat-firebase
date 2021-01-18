@@ -31,12 +31,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
-
-	React.useEffect(() => {
-		if (currentChannel) {
-			// console.log(extractUserId());
-		}
-	}, [currentChannel]);
+	const users = useSelector((state) => state.users);
 
 	const extractUserId = () => {
 		let str = currentChannel.id;
@@ -73,8 +68,15 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 					.child(extractUserId())
 					.child('newMessages')
 					.child(currentChannel.id)
-
 					.set(firebase.database.ServerValue.increment(1));
+			} else {
+				users.forEach((el) => {
+					usersRef
+						.child(el.uid)
+						.child('newMessages')
+						.child(currentChannel.id)
+						.set(firebase.database.ServerValue.increment(1));
+				});
 			}
 		}
 	};

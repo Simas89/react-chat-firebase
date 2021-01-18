@@ -21,7 +21,6 @@ const Wrap = styled.div`
 `;
 
 const SidePanel = React.memo(() => {
-	console.log('render');
 	const dispatch = useDispatch();
 	return (
 		<Wrap>

@@ -4,6 +4,7 @@ import {
 	SET_STARRED,
 	SET_SHOW_ONLY_STARRED,
 	SET_NEW_MESSAGES,
+	SET_CHAT_WINDOW_SCROLL_PX,
 } from 'types/channelTypes';
 
 export const channelReducer = (
@@ -13,6 +14,7 @@ export const channelReducer = (
 		starred: [],
 		showOnlyStarred: false,
 		newMessages: [],
+		chatScroll: 0,
 	},
 	action
 ) => {
@@ -31,6 +33,9 @@ export const channelReducer = (
 
 		case SET_NEW_MESSAGES:
 			return { ...state, newMessages: action.payload };
+
+		case SET_CHAT_WINDOW_SCROLL_PX:
+			return { ...state, chatScroll: action.payload };
 
 		default:
 			return state;

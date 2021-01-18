@@ -135,8 +135,7 @@ const DirectMessages = () => {
 			: `${currentUserId}${userId}`;
 	};
 
-	const ParseChannelItem = ({ el }) => {
-		React.useEffect(() => {}, []);
+	const parseChannelItem = (el) => {
 		const index = newMessages
 			? newMessages
 					.map((e) => e.channelId)
@@ -196,13 +195,10 @@ const DirectMessages = () => {
 			{users.length && (
 				<List>
 					{users.map((el) =>
-						showOnlyStarred ? (
-							starred.includes(getChannelId(el.uid)) && (
-								<ParseChannelItem key={el.uid} el={el} />
-							)
-						) : (
-							<ParseChannelItem key={el.uid} el={el} />
-						)
+						showOnlyStarred
+							? starred.includes(getChannelId(el.uid)) &&
+							  parseChannelItem(el)
+							: parseChannelItem(el)
 					)}
 				</List>
 			)}

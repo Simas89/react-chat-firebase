@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { setNewMessages } from 'actions/channelActions';
 import { SET_NEW_MESSAGES } from 'types/channelTypes';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -28,15 +29,6 @@ const Wrap = styled.div`
 
 const usersRef = firebase.database().ref('users');
 
-const parseObjToArray = (obj) => {
-	let parsedMessages = [];
-	//eslint-disable-next-line
-	for (const [key, value] of Object.entries(obj)) {
-		parsedMessages.push({ channelId: key, newMessages: value });
-	}
-	return parsedMessages;
-};
-
 const ChatScreen = () => {
 	const isLoading = useSelector((state) => state.user.isLoading);
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -48,10 +40,7 @@ const ChatScreen = () => {
 				.child(currentUser.uid)
 				.child('newMessages')
 				.on('value', (snap) => {
-					dispatch({
-						type: SET_NEW_MESSAGES,
-						payload: snap.val() && parseObjToArray(snap.val()),
-					});
+					dispatch(setNewMessages(snap.val()));
 				});
 		}
 	}, [currentUser, dispatch]);

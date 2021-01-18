@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { SET_CHAT_WINDOW_SCROLL_PX } from 'types/channelTypes';
 import { Paper } from '@material-ui/core';
 import { Scrollbars } from 'react-custom-scrollbars';
 import styled from 'styled-components';
@@ -20,17 +21,17 @@ const Wrap = styled(Paper)`
 `;
 
 const MessagesContent = ({ messages }) => {
+	const dispatch = useDispatch();
 	const currentUser = useSelector((state) => state.user.currentUser);
-	const [pxToBottom, setPxToBottom] = React.useState(0);
 	const scrollBarRef = React.useRef(null);
 	const innerRef = React.useRef(null);
 
 	const calcPxToBottom = (scrollValue) => {
 		const outerHeight = scrollBarRef.current.getClientHeight();
 		const innerHeight = innerRef.current.clientHeight;
-		const isBottom = innerHeight - (outerHeight + scrollValue);
+		const chatScroll = innerHeight - (outerHeight + scrollValue);
 
-		setPxToBottom(isBottom);
+		dispatch({ type: SET_CHAT_WINDOW_SCROLL_PX, payload: chatScroll });
 	};
 
 	React.useEffect(() => {

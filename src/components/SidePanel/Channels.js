@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
+import { clearCurrentChannelNewMessages } from 'actions/channelActions';
 import {
 	Typography,
 	List,
@@ -9,6 +10,7 @@ import {
 	Box,
 	Fab,
 	useTheme,
+	Badge,
 } from '@material-ui/core';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import StarIcon from '@material-ui/icons/Star';
@@ -49,7 +51,7 @@ const Channels = () => {
 	const [open, setOpen] = React.useState(false);
 	const [activeChannel, setActiveChannel] = React.useState('');
 	const channel = useSelector((state) => state.channel);
-	const { currentChannel, starred, showOnlyStarred } = channel;
+	const { currentChannel, starred, showOnlyStarred, newMessages } = channel;
 	const changeChannel = (channel) => {
 		dispatch({ type: SET_CHANNEL, payload: channel });
 		dispatch({ type: SET_CHANNEL_PRIVATE, payload: false });
@@ -58,19 +60,38 @@ const Channels = () => {
 	const theme = useTheme();
 
 	React.useEffect(() => {
-		currentChannel && setActiveChannel(currentChannel.id);
+		if (currentChannel) {
+			setActiveChannel(currentChannel.id);
+			dispatch(clearCurrentChannelNewMessages());
+		}
 	}, [currentChannel]);
 
 	React.useEffect(() => {
+		const parseObjToArray = (obj) => {
+			let parsedMessages = [];
+			//eslint-disable-next-line
+			for (const [key, value] of Object.entries(obj)) {
+				parsedMessages.push({ ...value });
+			}
+			return parsedMessages;
+		};
+
 		let canInitialChannelSet = true;
 		const addListeners = async () => {
-			channelsRef.on('child_added', (snap) => {
-				setChannels((prevState) => [...prevState, snap.val()]);
+			// channelsRef.on('child_added', (snap) => {
+			// 	setChannels((prevState) => [...prevState, snap.val()]);
+			channelsRef.once('value', (snap) => {
+				setChannels(parseObjToArray(snap.val()));
+				channelsRef.off('value');
 
 				if (canInitialChannelSet) {
 					canInitialChannelSet = false;
-					changeChannel(snap.val());
+					changeChannel(parseObjToArray(snap.val())[0]);
 				}
+			});
+
+			channelsRef.limitToLast(1).on('child_added', (snap) => {
+				setChannels((prevState) => [...prevState, snap.val()]);
 			});
 		};
 		addListeners();
@@ -82,6 +103,10 @@ const Channels = () => {
 	}, []);
 
 	const parseChannelItem = (el) => {
+		const index = newMessages
+			? newMessages.map((e) => e.channelId).indexOf(el.id)
+			: -1;
+
 		return (
 			<ListItem
 				selected={activeChannel === el.id}
@@ -90,11 +115,19 @@ const Channels = () => {
 				key={el.id}
 			>
 				<Box display="flex" justifyContent="center">
-					{currentChannel && starred.includes(el.id) && (
+					{starred.includes(el.id) && (
 						<StarIcon fontSize="small" style={{ color: amber[500] }} />
 					)}
-					<Typography>#{el.name}</Typography>
+					<Typography>{el.name}</Typography>
 				</Box>
+				<Badge
+					color="error"
+					badgeContent={
+						index !== -1 ? newMessages[index].newMessages : null
+					}
+					variant="standard"
+					style={{ marginLeft: 'auto', marginRight: '16px' }}
+				/>
 			</ListItem>
 		);
 	};
