@@ -10,7 +10,7 @@ const HtmlTooltip = withStyles((theme) => ({
 		backgroundColor: '#f5f5f9',
 		// backgroundColor: '#f5f5f9',
 		color: 'rgba(0, 0, 0, 0.87)',
-		maxWidth: 220,
+		// maxWidth: 220,
 		fontSize: theme.typography.pxToRem(12),
 		border: '1px solid #dadde9',
 	},
@@ -33,24 +33,18 @@ export const TooltipCustom = ({
 	items,
 	arrow,
 	placement = 'bottom',
+	isOpen,
 }) => {
-	const [isOpen, setIsOpen] = React.useState(false);
 	return (
 		<HtmlTooltip
 			placement={placement}
 			interactive={true}
+			disableFocusListener
+			disableHoverListener
+			disableTouchListener
 			arrow={arrow}
 			open={isOpen}
-			onClose={() => setIsOpen(false)}
-			onOpen={() => setIsOpen(true)}
-			title={
-				<Contents
-					onMouseLeave={() => setIsOpen(false)}
-					onClick={() => setIsOpen(false)}
-				>
-					{items}
-				</Contents>
-			}
+			title={<Contents>{items}</Contents>}
 		>
 			{children}
 		</HtmlTooltip>

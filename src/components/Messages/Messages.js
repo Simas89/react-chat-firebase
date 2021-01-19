@@ -49,7 +49,6 @@ const Messages = () => {
 				.child(channelId)
 				.limitToLast(1)
 				.on('child_added', (snap) => {
-					console.log(snap.index_);
 					setMessages((prevState) => [...prevState, snap.val()]);
 				});
 

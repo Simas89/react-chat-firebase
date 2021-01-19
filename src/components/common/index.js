@@ -7,3 +7,4 @@ export * from './ModalFile';
 export * from './ModalAvatar';
 export * from './SnackBarCustom';
 export * from './Logo';
+export * from './BadgeStyled';

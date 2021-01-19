@@ -11,12 +11,19 @@ import {
 import styled from 'styled-components';
 import SendIcon from '@material-ui/icons/Send';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
+import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import { ModalFile } from 'components/common';
 import firebase from 'config/firebase';
 import uuidv4 from 'uuid/v4';
+import { Skeleton } from '@material-ui/lab';
 
 const Wrap = styled(Paper)`
+	position: relative;
 	background-color: white;
+	.MuiSkeleton-root {
+		position: absolute;
+		background-color: red;
+	}
 `;
 
 const storageRef = firebase.storage().ref();
@@ -170,6 +177,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 
 	return (
 		<Wrap elevation={8}>
+			<Skeleton variant="rect" width={210} height={'100%'} />
 			{isFileModalOpen && (
 				<ModalFile
 					setIsFileModalOpen={setIsFileModalOpen}
@@ -209,6 +217,9 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 					),
 					startAdornment: (
 						<InputAdornment position="start">
+							<IconButton>
+								<InsertEmoticonIcon />
+							</IconButton>
 							{loading && (
 								<CircularProgress
 									size={30}

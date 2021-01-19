@@ -1,7 +1,14 @@
 import React from 'react';
 import firebase from 'config/firebase';
 import { useSelector } from 'react-redux';
-import { Box, Button, Avatar, Grid, Typography } from '@material-ui/core';
+import {
+	Box,
+	Button,
+	Avatar,
+	Grid,
+	Typography,
+	ClickAwayListener,
+} from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import styled from 'styled-components';
 import { TooltipCustom, ModalAvatar } from 'components/common';
@@ -85,6 +92,15 @@ const AvatarReloaded = (currentUser) => {
 const UserPanel = () => {
 	const [isModal, setIsModal] = React.useState(false);
 	const currentUser = useSelector((state) => state.user.currentUser);
+	const [openTooltip, setOpenTooltip] = React.useState(false);
+
+	const handleTooltipClose = () => {
+		setOpenTooltip(false);
+	};
+
+	const handleTooltipOpen = () => {
+		setOpenTooltip(true);
+	};
 
 	const handleSignOut = () => {
 		firebase
@@ -103,53 +119,67 @@ const UserPanel = () => {
 
 			<Grid container>
 				<Grid item>
-					<TooltipCustom
-						placement="bottom-start"
-						arrow={false}
-						items={
-							<>
-								<Button onClick={() => setIsModal(true)}>
-									Change avatar
-								</Button>
-								<Button
-									onClick={handleSignOut}
-									endIcon={<ExitToAppIcon />}
-								>
-									Sign Out
-								</Button>
-							</>
-						}
-					>
-						<Box
-							display="flex"
-							margin="auto"
-							alignItems="flex-end"
-							style={{ marginRight: 'auto' }}
-						>
-							{AvatarReloaded(currentUser)}
-							<Button
-								style={{
-									color: 'black',
-									height: '25px',
-								}}
-								disableElevation
-								disableRipple
+					<ClickAwayListener onClickAway={handleTooltipClose}>
+						<div>
+							<TooltipCustom
+								onClose={handleTooltipClose}
+								isOpen={openTooltip}
+								placement="bottom-start"
+								arrow={false}
+								items={
+									<>
+										<Button onClick={() => setIsModal(true)}>
+											Change avatar
+										</Button>
+										<Button
+											onClick={handleSignOut}
+											endIcon={<ExitToAppIcon />}
+										>
+											Sign Out
+										</Button>
+									</>
+								}
 							>
-								<Typography variant="h6" color="textPrimary">
-									{currentUser.displayName}
-								</Typography>
-								<span
-									style={{
-										fontSize: '.5rem',
-										marginLeft: '5px',
-										color: 'rgba(0,0,0,86)',
-									}}
+								<Box
+									display="flex"
+									margin="auto"
+									alignItems="flex-end"
+									style={{ marginRight: 'auto' }}
 								>
-									▼
-								</span>
-							</Button>
-						</Box>
-					</TooltipCustom>
+									{AvatarReloaded(currentUser)}
+									<Button
+										style={{
+											color: 'black',
+											height: '25px',
+										}}
+										disableElevation
+										disableRipple
+									>
+										<Typography
+											onClick={
+												openTooltip
+													? handleTooltipClose
+													: handleTooltipOpen
+											}
+											variant="h6"
+											color="textPrimary"
+										>
+											{currentUser.displayName}
+										</Typography>
+										<span
+											style={{
+												fontSize: '.5rem',
+												marginLeft: '5px',
+												color: 'rgba(0,0,0,86)',
+											}}
+										>
+											▼
+										</span>
+									</Button>
+								</Box>
+							</TooltipCustom>
+						</div>
+					</ClickAwayListener>
 				</Grid>
 			</Grid>
 		</Wrap>

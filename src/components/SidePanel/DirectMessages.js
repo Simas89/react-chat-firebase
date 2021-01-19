@@ -5,10 +5,10 @@ import { SET_USERS, SET_USERS_ALL } from 'types/usersTypes';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
 import { Typography, List, ListItem, Box, Badge } from '@material-ui/core';
 import MailIcon from '@material-ui/icons/Mail';
-import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import styled from 'styled-components';
 import StarIcon from '@material-ui/icons/Star';
 import amber from '@material-ui/core/colors/amber';
+import { BadgeStyled } from 'components/common';
 
 const StyledDiv = styled.div`
 	color: white;
@@ -122,6 +122,7 @@ const DirectMessages = () => {
 			const channelData = {
 				id: channelId,
 				name: user.name,
+				avatar: user.avatar,
 			};
 			dispatch({ type: SET_CHANNEL, payload: channelData });
 			dispatch({ type: SET_CHANNEL_PRIVATE, payload: true });
@@ -169,10 +170,9 @@ const DirectMessages = () => {
 						)}
 
 					<Typography noWrap>{el.name}</Typography>
-
-					{el.isOnline === 'online' && (
-						<FiberManualRecordIcon className="is-online" />
-					)}
+					<Box marginLeft={1.5}>
+						<BadgeStyled invisible={el.isOnline !== 'online'} />
+					</Box>
 				</Box>
 				<Badge
 					color="error"
