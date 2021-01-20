@@ -77,15 +77,29 @@ const DirectMessages = () => {
 	}, [presenceTrig]);
 
 	React.useEffect(() => {
+		usersRef.off();
+		dispatch({ type: SET_USERS, payload: [] });
+		const parseObjToArray = (obj) => {
+			let array = [];
+			for (const [key, value] of Object.entries(obj)) {
+				array.push({ ...value, uid: key, isOnline: 'offline' });
+			}
+			return array;
+		};
+
 		const addListeners = (currentUserUid) => {
-			usersRef.on('child_added', (snap) => {
-				if (currentUserUid !== snap.key) {
-					let user = snap.val();
-					user['uid'] = snap.key;
-					user['isOnline'] = 'offline';
-					// setUsers((state) => [...state, user]);
-					dispatch({ type: SET_USERS, payload: user });
-				}
+			usersRef.once('value', (snap) => {
+				const users = parseObjToArray({ ...snap.val() });
+				const index = users.map((e) => e.uid).indexOf(currentUserUid);
+				users.splice(index, 1);
+				dispatch({ type: SET_USERS, payload: users });
+			});
+
+			usersRef.limitToLast(1).on('child_added', (snap) => {
+				let user = snap.val();
+				user['uid'] = snap.key;
+				user['isOnline'] = 'offline';
+				users.legth && dispatch({ type: SET_USERS, payload: [user] });
 			});
 
 			connectedRef.on('value', (snap) => {
@@ -114,7 +128,11 @@ const DirectMessages = () => {
 		if (currentUser) {
 			addListeners(currentUser.uid);
 		}
-	}, [currentUser, dispatch]);
+		return () => {
+			usersRef.off();
+			dispatch({ type: SET_USERS_ALL, payload: [] });
+		};
+	}, [currentUser, dispatch, users.legth]);
 
 	const changeChannel = (user) => {
 		const channelId = getChannelId(user.uid);

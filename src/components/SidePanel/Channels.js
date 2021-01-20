@@ -64,22 +64,20 @@ const Channels = () => {
 			setActiveChannel(currentChannel.id);
 			dispatch(clearCurrentChannelNewMessages());
 		}
-	}, [currentChannel]);
+	}, [currentChannel, dispatch]);
 
 	React.useEffect(() => {
 		const parseObjToArray = (obj) => {
-			let parsedMessages = [];
+			let array = [];
 			//eslint-disable-next-line
 			for (const [key, value] of Object.entries(obj)) {
-				parsedMessages.push({ ...value });
+				array.push({ ...value });
 			}
-			return parsedMessages;
+			return array;
 		};
 
 		let canInitialChannelSet = true;
 		const addListeners = async () => {
-			// channelsRef.on('child_added', (snap) => {
-			// 	setChannels((prevState) => [...prevState, snap.val()]);
 			channelsRef.once('value', (snap) => {
 				setChannels(parseObjToArray(snap.val()));
 				channelsRef.off('value');

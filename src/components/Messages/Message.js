@@ -83,7 +83,7 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 			.on('value', (snap) => setAvatarURL(snap.val().avatar));
 
 		return () => usersRef.child(message.user.id).off('value');
-	}, []);
+	}, [message.user.id]);
 	const messageAppearVariant = {
 		initial: {
 			opacity: 0,
@@ -106,8 +106,6 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 			},
 		},
 	};
-
-	// console.log(message.user.id);
 
 	return (
 		<StyledDiv isOwnMessage={currentUser.displayName === message.user.name}>
@@ -138,8 +136,8 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 								<Skeleton
 									animation="wave"
 									variant="rect"
-									width={1000}
-									height={500}
+									width={message.image.imgSize.width}
+									height={message.image.imgSize.height}
 								/>
 							)}
 							<img

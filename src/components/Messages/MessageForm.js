@@ -16,15 +16,20 @@ import { ModalFile } from 'components/common';
 import firebase from 'config/firebase';
 import uuidv4 from 'uuid/v4';
 import { Skeleton } from '@material-ui/lab';
+import { motion } from 'framer-motion';
+import green from '@material-ui/core/colors/green';
 
 const Wrap = styled(Paper)`
 	position: relative;
 	background-color: white;
+	/* overflow: hidden; */
 	.MuiSkeleton-root {
 		position: absolute;
-		background-color: red;
+		background-color: ${green['A400']};
 	}
 `;
+
+const SkeletonMotion = motion.custom(Skeleton);
 
 const storageRef = firebase.storage().ref();
 
@@ -33,6 +38,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 	const [message, setMessage] = React.useState('');
 	const [file, setFile] = React.useState('');
 	const [fileCaption, setFileCaption] = React.useState('');
+	const [uploadProgress, setUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
 	const [isFileModalOpen, setIsFileModalOpen] = React.useState(false);
 
@@ -107,30 +113,28 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 		return newMessage;
 	};
 
+	const getImageHeightAndWidthFromFile = (file) =>
+		new Promise((resolve, reject) => {
+			let img = new Image();
+			img.src = window.URL.createObjectURL(file);
+			img.onload = () => {
+				resolve({ width: img.width, height: img.height });
+			};
+		});
+
 	const uploadFile = () => {
 		const pathToUpload = currentChannel.id;
-		const ref = messagesRef;
 		const filePath = `chat/public/${uuidv4()}.${file.type.split('/')[1]}`;
 
-		storageRef
-			.child(filePath)
-			.put(file)
-			.then((snap) => {
-				snap.ref
-					.getDownloadURL()
-					.then((fileUrl) =>
-						sendFileMessage(
-							{ fileUrl, caption: fileCaption || '' },
-							ref,
-							pathToUpload
-						)
-					);
-				setLoading(false);
-				setMessage('');
-				setFile('');
-				setFileCaption('');
-			})
-			.catch(() => {
+		const uploadTask = storageRef.child(filePath).put(file);
+		uploadTask.on(
+			'state_changed',
+			(snapshot) => {
+				const progress =
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				setUploadProgress(Math.round(progress));
+			},
+			(err) => {
 				dispatch({
 					type: SET_SNACK,
 					payload: {
@@ -143,11 +147,32 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 				setMessage('');
 				setFile('');
 				setFileCaption('');
-			});
+				setUploadProgress(0);
+			},
+			() => {
+				uploadTask.snapshot.ref.getDownloadURL().then(async (fileUrl) => {
+					const imgSize = await getImageHeightAndWidthFromFile(file);
+					sendFileMessage(
+						{ fileUrl, caption: fileCaption || '', imgSize },
+						messagesRef,
+						pathToUpload
+					);
+				});
+				setLoading(false);
+				setMessage('');
+				setFile('');
+				setFileCaption('');
+				const timeout = setTimeout(() => {
+					setUploadProgress(0);
+					clearTimeout(timeout);
+				}, 200);
+			}
+		);
 	};
 
 	const sendFileMessage = (fileData, ref, pathToUpload) => {
 		// console.log(fileUrl, ref, pathToUpload);
+		console.log(fileData);
 		ref.child(pathToUpload)
 			.push()
 			.set(createMessage(fileData))
@@ -175,9 +200,30 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 		}
 	};
 
+	const variants = {
+		inProgress: {
+			width: `${uploadProgress}%`,
+			transition: {
+				type: 'tween',
+			},
+		},
+		done: {
+			width: '0%',
+			transition: {
+				duration: 0,
+			},
+		},
+	};
+
 	return (
 		<Wrap elevation={8}>
-			<Skeleton variant="rect" width={210} height={'100%'} />
+			<SkeletonMotion
+				variants={variants}
+				variant="rect"
+				// width={`${uploadProgress}%`}
+				height={'100%'}
+				animate={loading ? 'inProgress' : 'done'}
+			/>
 			{isFileModalOpen && (
 				<ModalFile
 					setIsFileModalOpen={setIsFileModalOpen}

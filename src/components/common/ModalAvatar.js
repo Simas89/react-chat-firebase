@@ -92,17 +92,12 @@ export const ModalAvatar = ({ setIsModal }) => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		// setIsModal(false);
-		//
-		const image = new File([blob], 'my_image.png', {
-			type: 'image/png',
-			lastModified: new Date(),
-		});
-		console.log(image);
-		//
+		const metadata = {
+			contentType: 'image/jpeg',
+		};
 		storageRef
 			.child(`avatars/user-${userRef.currentUser.uid}.png`)
-			.put(image, { contentType: 'img/png' })
+			.put(blob, metadata)
 			.then((snap) =>
 				snap.ref
 					.getDownloadURL()

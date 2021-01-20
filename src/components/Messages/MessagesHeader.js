@@ -12,7 +12,6 @@ import {
 	IconButton,
 	Avatar,
 	ClickAwayListener,
-	Tooltip,
 } from '@material-ui/core';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
@@ -157,8 +156,8 @@ const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
 									height: '70px',
 									width: '70px',
 								}}
-								alt={currentUser.displayName}
-								src={currentUser.photoURL}
+								alt={currentChannel.name}
+								src={currentChannel.avatar}
 							/>
 						</BadgeStyled>
 					</>

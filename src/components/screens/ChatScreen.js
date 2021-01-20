@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setNewMessages } from 'actions/channelActions';
-import { SET_NEW_MESSAGES } from 'types/channelTypes';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 import { Grid, Container } from '@material-ui/core';
