@@ -11,7 +11,7 @@ import { motion } from 'framer-motion';
 
 const StyledDiv = styled.div`
 	/* margin-right: 8px; */
-	padding: 10px 20px 0 20px;
+	padding: 10px 10px 0px 10px;
 	height: 100%;
 	background-color: ${(p) => p.theme.palette.white};
 	.container {
@@ -107,7 +107,7 @@ const Messages = () => {
 				container
 				className="container"
 				direction="column"
-				spacing={2}
+				spacing={1}
 				wrap="nowrap"
 			>
 				<Grid item>

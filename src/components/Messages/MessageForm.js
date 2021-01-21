@@ -18,6 +18,7 @@ import uuidv4 from 'uuid/v4';
 import { Skeleton } from '@material-ui/lab';
 import { motion } from 'framer-motion';
 import green from '@material-ui/core/colors/green';
+import Picker from 'emoji-picker-react';
 
 const Wrap = styled(Paper)`
 	position: relative;
@@ -26,6 +27,10 @@ const Wrap = styled(Paper)`
 	.MuiSkeleton-root {
 		position: absolute;
 		background-color: ${green['A400']};
+	}
+	.emoji-picker-react {
+		position: absolute !important;
+		top: -320px;
 	}
 `;
 
@@ -41,6 +46,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 	const [uploadProgress, setUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
 	const [isFileModalOpen, setIsFileModalOpen] = React.useState(false);
+	const [emojiPicker, setEmojiPicker] = React.useState(true);
 
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -215,8 +221,22 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 		},
 	};
 
+	const onEmojiClick = (event, emojiObject) => {
+		console.log(emojiObject);
+		setMessage(
+			message ? `${message} ${emojiObject.emoji}` : `${emojiObject.emoji}`
+		);
+		setEmojiPicker(false);
+	};
+
 	return (
 		<Wrap elevation={8}>
+			{emojiPicker && <Picker onEmojiClick={onEmojiClick} />}
+			{/* <div
+				contentEditable="true"
+				//   onInput={e => console.log('Text inside div', e.currentTarget.textContent)}
+			>
+			</div> */}
 			<SkeletonMotion
 				variants={variants}
 				variant="rect"
@@ -233,6 +253,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 					setFileCaption={setFileCaption}
 				/>
 			)}
+
 			<TextField
 				id="outlined-basic"
 				variant="outlined"
@@ -263,7 +284,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 					),
 					startAdornment: (
 						<InputAdornment position="start">
-							<IconButton>
+							<IconButton onClick={() => setEmojiPicker(!emojiPicker)}>
 								<InsertEmoticonIcon />
 							</IconButton>
 							{loading && (

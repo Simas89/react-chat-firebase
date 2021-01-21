@@ -11,11 +11,13 @@ import {
 	Fab,
 	useTheme,
 	Badge,
+	Divider,
 } from '@material-ui/core';
-import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import StarIcon from '@material-ui/icons/Star';
 import AddIcon from '@material-ui/icons/Add';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import amber from '@material-ui/core/colors/amber';
+import { motion } from 'framer-motion';
 
 import { ModalChannels } from 'components/common';
 import firebase from 'config/firebase';
@@ -28,27 +30,38 @@ const Wrap = styled.div`
 	.top-head {
 		display: flex;
 		align-items: center;
-		margin: 8px 0;
+		margin-top: 8px;
+		.heading {
+			font-family: 'Hiddencocktails' !important;
+			font-size: 2rem;
+			user-select: none;
+			&:hover {
+				cursor: pointer;
+			}
+		}
 	}
 	.Mui-selected {
 		border-radius: 3px;
 		background-color: ${(p) => p.theme.palette.primary.dark};
-		background-color: rgba(3, 169, 244, 0.2);
+		background-color: rgba(3, 169, 244, 0.2) !important;
 		box-shadow: 0 0 0px 1px rgba(3, 169, 244, 0.3);
 	}
 	.MuiList-root {
-		padding: 0;
 		.MuiListItem-root {
 			padding: 4px 0 4px 16px;
 		}
 	}
 `;
 
+const ExpandLessIconMotion = motion.custom(ExpandLessIcon);
+
 const channelsRef = firebase.database().ref('channels');
-const Channels = () => {
+
+const Channels = ({ forceRender }) => {
 	const dispatch = useDispatch();
 	const [channels, setChannels] = React.useState([]);
 	const [open, setOpen] = React.useState(false);
+	const [showList, setShowList] = React.useState(true);
 	const [activeChannel, setActiveChannel] = React.useState('');
 	const channel = useSelector((state) => state.channel);
 	const { currentChannel, starred, showOnlyStarred, newMessages } = channel;
@@ -116,7 +129,14 @@ const Channels = () => {
 					{starred.includes(el.id) && (
 						<StarIcon fontSize="small" style={{ color: amber[500] }} />
 					)}
-					<Typography>{el.name}</Typography>
+					<Typography
+						variant="body2"
+						color="textPrimary"
+						noWrap
+						style={{ paddingRight: '5px' }}
+					>
+						<i>{el.name} </i>
+					</Typography>
 				</Box>
 				<Badge
 					color="error"
@@ -130,17 +150,43 @@ const Channels = () => {
 		);
 	};
 
+	const channelsOnDisplayCount = () => {
+		const num = channels.reduce((acc, el) => {
+			showOnlyStarred ? starred.includes(el.id) && acc++ : acc++;
+			return acc;
+		}, 0);
+		return num;
+	};
+
 	return (
 		<Wrap>
 			{open && <ModalChannels setOpen={setOpen} channelsRef={channelsRef} />}
 			<div className="top-head">
-				<SyncAltIcon style={{ margin: 0 }} />
-				<Typography style={{ marginLeft: '8px' }} variant="body2">
-					CHANNELS
-				</Typography>
+				<Box
+					display="flex"
+					alignItems="center"
+					onClick={() => setShowList(!showList)}
+				>
+					<Typography
+						style={{ marginLeft: '8px' }}
+						className="heading"
+						color="primary"
+						variant="body2"
+					>
+						CHANNELS
+					</Typography>
+
+					<ExpandLessIconMotion
+						className="heading"
+						color="primary"
+						style={{ marginTop: '5px' }}
+						animate={{ rotate: showList ? 180 : 0 }}
+						transition={{ type: 'spring', mass: 1, damping: 15 }}
+					/>
+				</Box>
 
 				<Fab
-					size="small"
+					size="medium"
 					style={{
 						marginLeft: 'auto',
 						background: theme.classBg.background,
@@ -153,14 +199,26 @@ const Channels = () => {
 				</Fab>
 			</div>
 			{channels.length && (
-				<List>
-					{channels.map((el) =>
-						showOnlyStarred
-							? starred.includes(el.id) && parseChannelItem(el)
-							: parseChannelItem(el)
-					)}
-				</List>
+				<motion.div
+					style={{ overflow: 'hidden' }}
+					initial={!showList && { height: 0 }}
+					animate={{
+						height: showList ? channelsOnDisplayCount() * 28 + 16 : 0,
+					}}
+					transition={{ type: 'tween' }}
+					onAnimationComplete={forceRender}
+				>
+					<List>
+						{channels.map((el) =>
+							showOnlyStarred
+								? starred.includes(el.id) && parseChannelItem(el)
+								: parseChannelItem(el)
+						)}
+					</List>
+				</motion.div>
 			)}
+
+			<Divider />
 		</Wrap>
 	);
 };

@@ -16,8 +16,8 @@ export const ModalChannels = ({ setOpen, channelsRef }) => {
 	const [about, setAbout] = React.useState('');
 	const currentUser = useSelector((state) => state.user.currentUser);
 
-	const nameMax = 20;
-	const aboutMax = 100;
+	const nameMax = 30;
+	const aboutMax = 400;
 
 	const handleClose = () => {
 		setOpen(false);

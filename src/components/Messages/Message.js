@@ -6,13 +6,14 @@ import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@material-ui/lab';
 import firebase from 'config/firebase';
+import Emojify from 'react-emojione';
 
 const StyledDiv = styled.div`
 	/* border: 1px solid red; */
 	position: relative;
 	border-radius: 3px;
-	margin: 4px 10px 4px 0;
-	padding: 10px;
+	margin: 0px 10px 4px 0;
+	padding: 8px;
 	display: flex;
 
 	${(p) =>
@@ -127,8 +128,22 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 						</span>
 					</div>
 
-					<Typography variant="body1" color="textPrimary">
-						{message.content}
+					<Typography
+						variant="body1"
+						color="textPrimary"
+						style={{
+							display: 'flex',
+							alignItems: 'flex-end',
+						}}
+					>
+						<Emojify
+							style={{
+								height: 54,
+								width: 54,
+							}}
+						>
+							{message.content}
+						</Emojify>
 					</Typography>
 					{message.image && (
 						<div className={'image-card'}>

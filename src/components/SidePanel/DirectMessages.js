@@ -3,12 +3,20 @@ import firebase from 'config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_USERS, SET_USERS_ALL } from 'types/usersTypes';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
-import { Typography, List, ListItem, Box, Badge } from '@material-ui/core';
-import MailIcon from '@material-ui/icons/Mail';
+import {
+	Typography,
+	List,
+	ListItem,
+	Box,
+	Badge,
+	Divider,
+} from '@material-ui/core';
 import styled from 'styled-components';
 import StarIcon from '@material-ui/icons/Star';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import amber from '@material-ui/core/colors/amber';
 import { BadgeStyled } from 'components/common';
+import { motion } from 'framer-motion';
 
 const StyledDiv = styled.div`
 	color: white;
@@ -16,11 +24,19 @@ const StyledDiv = styled.div`
 	.top-head {
 		display: flex;
 		align-items: center;
+		.heading {
+			font-family: 'Hiddencocktails' !important;
+			font-size: 2rem;
+			user-select: none;
+			&:hover {
+				cursor: pointer;
+			}
+		}
 	}
 	.Mui-selected {
 		border-radius: 3px;
 		background-color: ${(p) => p.theme.palette.primary.dark};
-		background-color: rgba(3, 169, 244, 0.2);
+		background-color: rgba(3, 169, 244, 0.2) !important;
 		box-shadow: 0 0 0px 1px rgba(3, 169, 244, 0.3);
 	}
 
@@ -42,15 +58,19 @@ const StyledDiv = styled.div`
 	}
 `;
 
+const ExpandLessIconMotion = motion.custom(ExpandLessIcon);
+
 const usersRef = firebase.database().ref('users');
 const connectedRef = firebase.database().ref('.info/connected');
 const presenceRef = firebase.database().ref('presence');
 
-const DirectMessages = () => {
+const DirectMessages = ({ forceRender }) => {
 	const dispatch = useDispatch();
 
 	const [presenceTrig, setPresenceTrig] = React.useState(0);
 	const users = useSelector((state) => state.users);
+	const [showList, setShowList] = React.useState(true);
+
 	const [activeChannel, setActiveChannel] = React.useState('');
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const channel = useSelector((state) => state.channel);
@@ -187,7 +207,14 @@ const DirectMessages = () => {
 							/>
 						)}
 
-					<Typography noWrap>{el.name}</Typography>
+					<Typography
+						variant="body2"
+						color="textPrimary"
+						noWrap
+						style={{ paddingRight: '5px' }}
+					>
+						<i>{el.name}</i>
+					</Typography>
 					<Box marginLeft={1.5}>
 						<BadgeStyled invisible={el.isOnline !== 'online'} />
 					</Box>
@@ -202,24 +229,56 @@ const DirectMessages = () => {
 		);
 	};
 
+	const channelsOnDisplayCount = () => {
+		const num = users.reduce((acc, el) => {
+			showOnlyStarred
+				? starred.includes(getChannelId(el.uid)) && acc++
+				: acc++;
+			return acc;
+		}, 0);
+		return num;
+	};
+
 	return (
 		<StyledDiv>
-			<div className="top-head">
-				<MailIcon style={{ margin: 0 }} />
-				<Typography style={{ marginLeft: '8px' }} variant="body2">
+			<div className="top-head" onClick={() => setShowList(!showList)}>
+				<Typography
+					style={{ marginLeft: '8px' }}
+					variant="body2"
+					color="primary"
+					className="heading"
+				>
 					DIRECT MESSAGES
 				</Typography>
+				<ExpandLessIconMotion
+					className="heading"
+					color="primary"
+					style={{ marginTop: '5px' }}
+					animate={{ rotate: showList ? 180 : 0 }}
+					transition={{ type: 'spring', mass: 1, damping: 15 }}
+				/>
 			</div>
 			{users.length && (
-				<List>
-					{users.map((el) =>
-						showOnlyStarred
-							? starred.includes(getChannelId(el.uid)) &&
-							  parseChannelItem(el)
-							: parseChannelItem(el)
-					)}
-				</List>
+				<motion.div
+					style={{ overflow: 'hidden' }}
+					initial={!showList && { height: 0 }}
+					animate={{
+						height: showList ? channelsOnDisplayCount() * 28 + 16 : 0,
+					}}
+					transition={{ type: 'tween' }}
+					onAnimationComplete={forceRender}
+				>
+					<List>
+						{users.map((el) =>
+							showOnlyStarred
+								? starred.includes(getChannelId(el.uid)) &&
+								  parseChannelItem(el)
+								: parseChannelItem(el)
+						)}
+					</List>
+				</motion.div>
 			)}
+			<Divider />
 		</StyledDiv>
 	);
 };

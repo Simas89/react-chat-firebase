@@ -15,8 +15,6 @@ import styled from 'styled-components';
 import { TooltipCustom, ModalAvatar } from 'components/common';
 
 const Wrap = styled.div`
-	width: 350px;
-
 	header {
 		display: flex;
 		font-family: 'Hiddencocktails' !important;
@@ -164,6 +162,7 @@ const UserPanel = () => {
 											}
 											variant="h6"
 											color="textPrimary"
+											noWrap
 										>
 											{currentUser.displayName}
 										</Typography>

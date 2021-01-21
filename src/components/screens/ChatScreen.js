@@ -11,7 +11,6 @@ import SidePanel from 'components/SidePanel/SidePanel';
 import Messages from 'components/Messages/Messages';
 
 const Wrap = styled.div`
-	/* border: 1px solid red; */
 	height: 100vh;
 	display: grid;
 	.MuiContainer-root {
@@ -20,9 +19,10 @@ const Wrap = styled.div`
 	.loader-box {
 		height: 100vh;
 	}
-	.motion {
+	.side-panel {
 		z-index: 2;
 		height: 100vh;
+		/* border: 1px solid red; */
 	}
 `;
 
@@ -58,7 +58,7 @@ const ChatScreen = () => {
 					transition={{ delay: 0.5 }}
 				>
 					<Container maxWidth="xl" disableGutters>
-						<motion.div className="motion">
+						<motion.div className="side-panel">
 							<SidePanel />
 						</motion.div>
 

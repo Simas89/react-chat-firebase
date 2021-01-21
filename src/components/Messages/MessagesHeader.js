@@ -19,7 +19,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import amber from '@material-ui/core/colors/amber';
 import firebase from 'config/firebase';
-import { BadgeStyled, TooltipCustom } from 'components/common';
+import { BadgeStyled, TooltipCustom, ChannelInfo } from 'components/common';
 
 const Wrap = styled(Paper)`
 	background-color: white;
@@ -185,7 +185,14 @@ const MessagesHeader = ({ uniqueUsers, handleSearchChange }) => {
 								isOpen={openTooltip}
 								placement="bottom-start"
 								arrow={false}
-								items={<>lol</>}
+								items={
+									currentChannel && (
+										<ChannelInfo
+											createdBy={currentChannel.createdBy}
+											details={currentChannel.details}
+										/>
+									)
+								}
 							>
 								<InfoOutlinedIcon
 									onClick={handleTooltipOpen}
