@@ -18,7 +18,7 @@ import firebase from 'config/firebase';
 const StyledPaper = styled(Paper)`
 	position: relative;
 	background-color: white;
-	width: 500px;
+	/* width: 500px; */
 	padding: 16px;
 
 	.preview-image-container {

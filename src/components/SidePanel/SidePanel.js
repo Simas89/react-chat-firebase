@@ -14,7 +14,13 @@ const Wrap = styled.div`
 	background-color: ${(p) => p.theme.palette.white};
 	padding: 10px 10px 10px 10px;
 	height: 100%;
-	width: 350px;
+
+	${(p) => p.theme.breakpoints.up('sm')} {
+		width: 350px;
+	}
+	/* width: 350px;
+	width: 100vw; */
+	/* border: 1px solid red; */
 	.MuiPaper-root {
 		padding: 8px;
 		height: 100%;

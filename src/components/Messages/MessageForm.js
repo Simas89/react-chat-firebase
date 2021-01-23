@@ -46,7 +46,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 	const [uploadProgress, setUploadProgress] = React.useState(0);
 	const [loading, setLoading] = React.useState(false);
 	const [isFileModalOpen, setIsFileModalOpen] = React.useState(false);
-	const [emojiPicker, setEmojiPicker] = React.useState(true);
+	const [emojiPicker, setEmojiPicker] = React.useState(false);
 
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);

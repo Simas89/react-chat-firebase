@@ -21,6 +21,8 @@ export const Logo = () => {
 			setStage(0);
 			clearTimeout(timeout);
 		}, 4000);
+
+		return () => clearTimeout(timeout);
 	}, []);
 	const variants = {
 		initial: {

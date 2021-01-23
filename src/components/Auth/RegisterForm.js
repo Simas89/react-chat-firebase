@@ -151,7 +151,6 @@ const RegisterForm = () => {
 							payload: { field: 'name', value: e.target.value },
 						});
 				}}
-				autoFocus
 				value={name}
 				style={{ width: '100%' }}
 				variant="outlined"

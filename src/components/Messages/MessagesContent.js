@@ -10,13 +10,11 @@ const Wrap = styled(Paper)`
 	height: 100%;
 	padding: 0 0px 0 8px;
 	background-color: white;
+	white-space: pre-line;
+	position: relative;
 
 	.scroll-bars {
-		/* div:nth-child(2) {
-			border: 1px solid red;
-			padding-right: 10px !important;
-		} */
-		/* padding: 50px !important; */
+		max-width: 100%;
 	}
 `;
 

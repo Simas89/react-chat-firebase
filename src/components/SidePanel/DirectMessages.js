@@ -112,14 +112,15 @@ const DirectMessages = ({ forceRender }) => {
 				const users = parseObjToArray({ ...snap.val() });
 				const index = users.map((e) => e.uid).indexOf(currentUserUid);
 				users.splice(index, 1);
-				dispatch({ type: SET_USERS, payload: users });
+				dispatch({ type: SET_USERS_ALL, payload: users });
 			});
 
 			usersRef.limitToLast(1).on('child_added', (snap) => {
 				let user = snap.val();
 				user['uid'] = snap.key;
 				user['isOnline'] = 'offline';
-				users.legth && dispatch({ type: SET_USERS, payload: [user] });
+
+				dispatch({ type: SET_USERS, payload: [user] });
 			});
 
 			connectedRef.on('value', (snap) => {
@@ -247,6 +248,7 @@ const DirectMessages = ({ forceRender }) => {
 					variant="body2"
 					color="primary"
 					className="heading"
+					noWrap
 				>
 					DIRECT MESSAGES
 				</Typography>

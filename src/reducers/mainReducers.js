@@ -3,6 +3,7 @@ import {
 	SET_SNACK,
 	MAIN_SHOW_INTRO,
 	MAIN_ANIMATE_MESSAGE,
+	SET_SWIPED_SCREEN,
 } from 'types/mainTypes';
 
 export const formInputsReducer = (state = { name: '', email: '' }, action) => {
@@ -29,7 +30,11 @@ export const snackReducer = (
 };
 
 export const animationsReducer = (
-	state = { showIntro: false, animateMessage: false },
+	state = {
+		showIntro: true,
+		animateMessage: false,
+		swipedScreen: { direction: 'LEFT', deltaX: 0 },
+	},
 	action
 ) => {
 	switch (action.type) {
@@ -38,6 +43,8 @@ export const animationsReducer = (
 
 		case MAIN_ANIMATE_MESSAGE:
 			return { ...state, animateMessage: action.payload };
+		case SET_SWIPED_SCREEN:
+			return { ...state, swipedScreen: action.payload };
 
 		default:
 			return state;

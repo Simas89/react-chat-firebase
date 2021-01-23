@@ -130,6 +130,7 @@ export const Background = () => {
 	const theme = useTheme();
 
 	const showIntro = useSelector((state) => state.animations.showIntro);
+	const currentUser = useSelector((state) => state.user.currentUser);
 
 	React.useEffect(() => {
 		setMode(location.pathname.split('/')[2]);
@@ -186,9 +187,7 @@ export const Background = () => {
 					</motion.div>
 				</>
 			) : (
-				<div className="logo">
-					<Logo />
-				</div>
+				<div className="logo">{!currentUser && <Logo />}</div>
 			)}
 		</Wrap>
 	);
