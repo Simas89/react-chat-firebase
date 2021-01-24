@@ -12,11 +12,15 @@ const Wrap = styled.div`
 	overflow: hidden;
 	z-index: 200;
 	background-color: ${(p) => p.theme.palette.white};
-	padding: 10px 10px 10px 10px;
+
 	height: 100%;
+	${(p) => p.theme.breakpoints.down('sm')} {
+		padding: 4px 4px 8px 4px;
+	}
 
 	${(p) => p.theme.breakpoints.up('sm')} {
 		width: 350px;
+		padding: 10px 10px 10px 10px;
 	}
 	/* width: 350px;
 	width: 100vw; */

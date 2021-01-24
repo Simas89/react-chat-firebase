@@ -9,6 +9,7 @@ import {
 	Box,
 	Typography,
 	CircularProgress,
+	useMediaQuery,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -35,6 +36,7 @@ const LoginForm = () => {
 	const [isPasswordError, setIsPasswordError] = React.useState(false);
 	const [serverError, setServerError] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
+	const smallScreen = useMediaQuery('(max-width:600px)');
 
 	const formInputs = useSelector((state) => state.formInputs);
 	const { email } = formInputs;
@@ -106,6 +108,7 @@ const LoginForm = () => {
 				label="Email"
 				error={isEmailError}
 				helperText={isEmailError && 'Email is not valid'}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 			<TextField
 				onChange={(e) => {
@@ -140,6 +143,7 @@ const LoginForm = () => {
 				helperText={
 					isPasswordError && `Password should be at least 6 characters`
 				}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 
 			<Box
@@ -150,7 +154,7 @@ const LoginForm = () => {
 			>
 				<Button
 					className="btn"
-					style={{ height: '50px' }}
+					style={{ height: smallScreen ? '35px' : '50px' }}
 					type="submit"
 					variant="contained"
 					color="primary"
@@ -164,8 +168,12 @@ const LoginForm = () => {
 						/>
 					)}
 				</Button>
-				<Typography>
-					Don't have an account?{' '}
+				<Typography
+					style={{
+						textAlign: 'right',
+					}}
+				>
+					Don't have an account?
 					<StyledLink to="/auth/register">
 						<strong>Register</strong>
 					</StyledLink>

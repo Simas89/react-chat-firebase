@@ -13,8 +13,8 @@ const Wrap = styled.div`
 `;
 
 export const Loader = () => {
-	const showIntro = useSelector((state) => state.animations.showIntro);
-	return showIntro ? (
+	const currentUser = useSelector((state) => state.user.currentUser);
+	return Boolean(currentUser) ? (
 		<Wrap>
 			<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
 				<ScaleLoader

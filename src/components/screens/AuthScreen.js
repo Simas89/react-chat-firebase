@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Grid, Container, Paper } from '@material-ui/core';
+import { Grid, Container, Paper, useMediaQuery } from '@material-ui/core';
 import { Route } from 'react-router-dom';
 import LoginForm from 'components/Auth/LoginForm';
 import RegisterForm from 'components/Auth/RegisterForm';
@@ -58,53 +58,54 @@ const Wrap = styled.div`
 `;
 // const usersRef = firebase.database().ref('users');
 
-const motionPaperVariants = {
-	high: {
-		height: 480,
-		transition: {
-			type: 'spring',
-			stiffness: 1300,
-			mass: 2,
-			damping: 55,
-		},
-	},
-	low: {
-		height: 300,
-		transition: {
-			type: 'spring',
-			stiffness: 1300,
-			mass: 2,
-			damping: 55,
-		},
-	},
-	fadeIn: {
-		opacity: 1,
-		transition: { type: 'tween', duration: 0.6, delay: 0.8 },
-	},
-	pimPirim: {
-		y: 0,
-		opacity: 1,
-		transition: {
-			type: 'spring',
-			stiffness: 400,
-			mass: 2,
-			damping: 35,
-			restSpeed: 0.001,
-			restDelta: 0.001,
-			delay: 0.3,
-		},
-	},
-};
-
 const MotionPaper = motion.custom(Paper);
 
 const AuthScreen = ({ location }) => {
 	const [page, setPage] = React.useState(location.pathname.split('/')[2]);
 	const showIntro = useSelector((state) => state.animations.showIntro);
+	const smallScreen = useMediaQuery('(max-width:600px)');
 
 	React.useEffect(() => {
 		setPage(location.pathname.split('/')[2]);
 	}, [location]);
+
+	const motionPaperVariants = {
+		high: {
+			height: smallScreen ? 360 : 480,
+			transition: {
+				type: 'spring',
+				stiffness: 1300,
+				mass: 2,
+				damping: 55,
+			},
+		},
+		low: {
+			height: smallScreen ? 220 : 312,
+			transition: {
+				type: 'spring',
+				stiffness: 1300,
+				mass: 2,
+				damping: 55,
+			},
+		},
+		fadeIn: {
+			opacity: 1,
+			transition: { type: 'tween', duration: 0.6, delay: 0.8 },
+		},
+		pimPirim: {
+			y: 0,
+			opacity: 1,
+			transition: {
+				type: 'spring',
+				stiffness: 400,
+				mass: 2,
+				damping: 35,
+				restSpeed: 0.001,
+				restDelta: 0.001,
+				delay: 0.3,
+			},
+		},
+	};
 
 	return (
 		!showIntro && (

@@ -3,6 +3,7 @@ import firebase from 'config/firebase';
 import { useSelector, useDispatch } from 'react-redux';
 import { SET_USERS, SET_USERS_ALL } from 'types/usersTypes';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
+import { SET_SWIPED_SCREEN } from 'types/mainTypes';
 import {
 	Typography,
 	List,
@@ -157,15 +158,18 @@ const DirectMessages = ({ forceRender }) => {
 
 	const changeChannel = (user) => {
 		const channelId = getChannelId(user.uid);
-		if (channelId !== currentChannel.id) {
-			const channelData = {
-				id: channelId,
-				name: user.name,
-				avatar: user.avatar,
-			};
-			dispatch({ type: SET_CHANNEL, payload: channelData });
-			dispatch({ type: SET_CHANNEL_PRIVATE, payload: true });
-		}
+
+		const channelData = {
+			id: channelId,
+			name: user.name,
+			avatar: user.avatar,
+		};
+		dispatch({ type: SET_CHANNEL, payload: channelData });
+		dispatch({ type: SET_CHANNEL_PRIVATE, payload: true });
+		dispatch({
+			type: SET_SWIPED_SCREEN,
+			payload: { direction: 'Right' },
+		});
 	};
 
 	const getChannelId = (userId) => {
@@ -188,6 +192,7 @@ const DirectMessages = ({ forceRender }) => {
 
 		return (
 			<ListItem
+				style={{ paddingLeft: '4px' }}
 				selected={activeChannel.includes(el.uid)}
 				key={el.uid}
 				button
@@ -270,7 +275,7 @@ const DirectMessages = ({ forceRender }) => {
 					transition={{ type: 'tween' }}
 					onAnimationComplete={forceRender}
 				>
-					<List>
+					<List style={{ padding: '2px 8px' }}>
 						{users.map((el) =>
 							showOnlyStarred
 								? starred.includes(getChannelId(el.uid)) &&

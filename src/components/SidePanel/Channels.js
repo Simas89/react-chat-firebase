@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_CHANNEL, SET_CHANNEL_PRIVATE } from 'types/channelTypes';
+import { SET_SWIPED_SCREEN } from 'types/mainTypes';
 import { clearCurrentChannelNewMessages } from 'actions/channelActions';
 import {
 	Typography,
@@ -26,6 +27,7 @@ const Wrap = styled.div`
 	/* margin-top: ${(p) => p.theme.spacing() * 2}px; */
 	color: white;
 	color: black;
+	margin-top: 16px;
 
 	.top-head {
 		display: flex;
@@ -65,9 +67,15 @@ const Channels = ({ forceRender }) => {
 	const [activeChannel, setActiveChannel] = React.useState('');
 	const channel = useSelector((state) => state.channel);
 	const { currentChannel, starred, showOnlyStarred, newMessages } = channel;
-	const changeChannel = (channel) => {
+	const changeChannel = (channel, shiftScreen = true) => {
 		dispatch({ type: SET_CHANNEL, payload: channel });
 		dispatch({ type: SET_CHANNEL_PRIVATE, payload: false });
+		if (shiftScreen) {
+			dispatch({
+				type: SET_SWIPED_SCREEN,
+				payload: { direction: 'Right' },
+			});
+		}
 	};
 
 	const theme = useTheme();
@@ -97,7 +105,7 @@ const Channels = ({ forceRender }) => {
 
 				if (canInitialChannelSet) {
 					canInitialChannelSet = false;
-					changeChannel(parseObjToArray(snap.val())[0]);
+					changeChannel(parseObjToArray(snap.val())[0], false);
 				}
 			});
 
@@ -120,6 +128,7 @@ const Channels = ({ forceRender }) => {
 
 		return (
 			<ListItem
+				style={{ paddingLeft: '4px' }}
 				selected={activeChannel === el.id}
 				button
 				onClick={() => changeChannel(el)}
@@ -189,6 +198,7 @@ const Channels = ({ forceRender }) => {
 					size="medium"
 					style={{
 						marginLeft: 'auto',
+						marginRight: '8px',
 						background: theme.classBg.background,
 					}}
 					color="primary"
@@ -208,7 +218,7 @@ const Channels = ({ forceRender }) => {
 					transition={{ type: 'tween' }}
 					onAnimationComplete={forceRender}
 				>
-					<List>
+					<List style={{ padding: '2px 8px' }}>
 						{channels.map((el) =>
 							showOnlyStarred
 								? starred.includes(el.id) && parseChannelItem(el)

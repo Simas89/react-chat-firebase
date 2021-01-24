@@ -1,17 +1,17 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { Avatar, Box, Typography } from '@material-ui/core';
+import { Avatar, Box, Typography, useMediaQuery } from '@material-ui/core';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Skeleton } from '@material-ui/lab';
 import firebase from 'config/firebase';
-import Emojify, { emojify } from 'react-emojione';
+import Emojify from 'react-emojione';
 
 const StyledDiv = styled.div`
 	position: relative;
 	border-radius: 3px;
-	margin: 0px 10px 4px 0;
+	margin: 0px 8px 4px 0;
 	padding: 8px;
 	display: flex;
 
@@ -40,9 +40,18 @@ const StyledDiv = styled.div`
 			/* border: 1px solid black; */
 			.name {
 				font-size: 1rem;
+				${(p) => p.theme.breakpoints.down('sm')} {
+					font-size: 0.9rem;
+				}
+			}
+			.time {
+				font-size: 0.8rem;
 			}
 			.gray {
 				color: gray;
+			}
+			.dot {
+				margin-top: 2px;
 			}
 		}
 		.text {
@@ -73,6 +82,7 @@ const usersRef = firebase.database().ref('users');
 const Message = ({ currentUser, message, triggerScrollDown }) => {
 	const [isImageLoaded, setIsImageLoaded] = React.useState(false);
 	const [avatarURL, setAvatarURL] = React.useState('');
+	const smallScreen = useMediaQuery('(max-width:600px)');
 	const animateMessage = useSelector(
 		(state) => state.animations.animateMessage
 	);
@@ -118,21 +128,27 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 				<Avatar src={avatarURL} alt={message.user.name} />
 				<div className="right">
 					<div className="meta">
-						<span className="name">
+						<Typography color="textPrimary" noWrap className="name">
 							<b>{message.user.name}</b>
-						</span>
-						<span className="gray">•</span>
-						<span className="gray">
+						</Typography>
+						<span className="gray dot">•</span>
+						<span className="gray time">
 							{moment(message.timestamp).fromNow()}
 						</span>
 					</div>
 
-					<Typography variant="body1" color="textPrimary">
+					<Typography
+						variant={smallScreen ? 'body2' : 'body1'}
+						color="textPrimary"
+					>
 						<Emojify>{message.content}</Emojify>
 					</Typography>
 
 					{message.image && (
-						<div className={'image-card'}>
+						<div
+							className={'image-card'}
+							style={{ width: `${message.image.imgSize.width}px` }}
+						>
 							{!isImageLoaded && (
 								<Skeleton
 									animation="wave"

@@ -17,7 +17,8 @@ const Wrap = styled.div`
 	scroll-behavior: smooth;
 	height: 100vh;
 	display: grid;
-	overflow-y: hidden;
+	overflow: hidden;
+	/* overflow: hidden; */
 	.MuiContainer-root {
 		display: flex;
 	}
@@ -39,7 +40,7 @@ const ChatScreen = () => {
 	const isLoading = useSelector((state) => state.user.isLoading);
 	const currentUser = useSelector((state) => state.user.currentUser);
 	const swipedScreen = useSelector((state) => state.animations.swipedScreen);
-	const { direction, deltaX } = swipedScreen;
+	const { direction } = swipedScreen;
 	const dispatch = useDispatch();
 	const smallScreen = useMediaQuery('(max-width:600px)');
 
@@ -71,22 +72,8 @@ const ChatScreen = () => {
 		}
 	}, [currentUser, dispatch]);
 
-	const ref = React.useRef(null);
-
-	React.useEffect(() => {
-		if (ref.current) {
-			console.log(ref);
-			console.log(ref.current.scrollRight);
-			ref.current.scrollLeft = -200;
-		}
-	}, [ref.current]);
-
-	const scroll = (scrollOffset) => {
-		ref.current.scrollLeft = scrollOffset;
-	};
-
 	return (
-		<Wrap {...handlers} onClick={() => scroll(200)} ref={ref}>
+		<Wrap {...handlers}>
 			{isLoading ? (
 				<div className="loader-box">
 					<Loader />
@@ -103,9 +90,9 @@ const ChatScreen = () => {
 						maxWidth="xl"
 						disableGutters
 						initial={{ x: 0 }}
-						// animate={{
-						// 	x: direction === 'LEFT' ? 0 : `calc(-50% - ${deltaX}px)`,
-						// }}
+						animate={{
+							x: direction === 'LEFT' ? 0 : smallScreen ? '-100vw' : 0,
+						}}
 						transition={{ type: 'tween' }}
 					>
 						<motion.div

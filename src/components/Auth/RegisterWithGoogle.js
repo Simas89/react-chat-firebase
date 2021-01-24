@@ -5,6 +5,7 @@ import GoogleButton from 'react-google-button';
 
 const usersRef = firebase.database().ref('users');
 var googleProvider = new firebase.auth.GoogleAuthProvider();
+const credential = firebase.auth.GoogleAuthProvider;
 
 const RegisterWithGoogle = () => {
 	const handleClick = () => {

@@ -127,7 +127,12 @@ const UserPanel = () => {
 								arrow={false}
 								items={
 									<>
-										<Button onClick={() => setIsModal(true)}>
+										<Button
+											onClick={() => {
+												setIsModal(true);
+												setOpenTooltip(false);
+											}}
+										>
 											Change avatar
 										</Button>
 										<Button

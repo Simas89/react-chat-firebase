@@ -11,7 +11,13 @@ import { motion } from 'framer-motion';
 
 const StyledDiv = styled.div`
 	/* margin-right: 8px; */
-	padding: 10px 10px 0px 10px;
+	${(p) => p.theme.breakpoints.down('sm')} {
+		padding: 4px 4px 0px 4px;
+	}
+
+	${(p) => p.theme.breakpoints.up('sm')} {
+		padding: 10px 10px 2px 10px;
+	}
 	height: 100%;
 	background-color: ${(p) => p.theme.palette.white};
 	.container {

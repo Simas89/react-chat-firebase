@@ -7,6 +7,7 @@ import {
 	InputAdornment,
 	Paper,
 	TextField,
+	useMediaQuery,
 } from '@material-ui/core';
 import styled from 'styled-components';
 import SendIcon from '@material-ui/icons/Send';
@@ -19,6 +20,7 @@ import { Skeleton } from '@material-ui/lab';
 import { motion } from 'framer-motion';
 import green from '@material-ui/core/colors/green';
 import Picker from 'emoji-picker-react';
+import { BadgeStyled } from 'components/common';
 
 const Wrap = styled(Paper)`
 	position: relative;
@@ -31,6 +33,13 @@ const Wrap = styled(Paper)`
 	.emoji-picker-react {
 		position: absolute !important;
 		top: -320px;
+		box-shadow: none;
+		.tneutral {
+			display: none;
+		}
+		.skin-tones-list {
+			display: none;
+		}
 	}
 `;
 
@@ -47,6 +56,7 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 	const [loading, setLoading] = React.useState(false);
 	const [isFileModalOpen, setIsFileModalOpen] = React.useState(false);
 	const [emojiPicker, setEmojiPicker] = React.useState(false);
+	const smallScreen = useMediaQuery('(max-width:600px)');
 
 	const currentChannel = useSelector((state) => state.channel.currentChannel);
 	const currentUser = useSelector((state) => state.user.currentUser);
@@ -232,11 +242,6 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 	return (
 		<Wrap elevation={8}>
 			{emojiPicker && <Picker onEmojiClick={onEmojiClick} />}
-			{/* <div
-				contentEditable="true"
-				//   onInput={e => console.log('Text inside div', e.currentTarget.textContent)}
-			>
-			</div> */}
 			<SkeletonMotion
 				variants={variants}
 				variant="rect"
@@ -269,22 +274,27 @@ const MessageForm = ({ messagesRef, usersRef }) => {
 					endAdornment: (
 						<InputAdornment position="end">
 							<IconButton
+								size={smallScreen ? 'small' : 'medium'}
 								onClick={sendHandler}
 								disabled={(!file && !Boolean(message)) || loading}
 								color="primary"
 							>
 								<SendIcon />
 							</IconButton>
+
 							<IconButton onClick={() => setIsFileModalOpen(true)}>
-								<AddAPhotoIcon
-									style={{ color: file ? 'blue' : 'gray' }}
-								/>
+								<BadgeStyled invisible={Boolean(!file)}>
+									<AddAPhotoIcon />
+								</BadgeStyled>
 							</IconButton>
 						</InputAdornment>
 					),
 					startAdornment: (
 						<InputAdornment position="start">
-							<IconButton onClick={() => setEmojiPicker(!emojiPicker)}>
+							<IconButton
+								size={smallScreen ? 'small' : 'medium'}
+								onClick={() => setEmojiPicker(!emojiPicker)}
+							>
 								<InsertEmoticonIcon />
 							</IconButton>
 							{loading && (

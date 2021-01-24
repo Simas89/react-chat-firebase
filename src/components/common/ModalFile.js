@@ -6,6 +6,7 @@ import {
 	Dialog,
 	Box,
 	TextField,
+	useMediaQuery,
 } from '@material-ui/core';
 
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -17,6 +18,7 @@ export const ModalFile = ({
 	fileCaption,
 	setFileCaption,
 }) => {
+	const smallScreen = useMediaQuery('(max-width:600px)');
 	const handleClose = () => {
 		setIsFileModalOpen(false);
 	};
@@ -32,7 +34,7 @@ export const ModalFile = ({
 			<Paper
 				style={{
 					backgroundColor: 'white',
-					width: '500px',
+					width: smallScreen ? 'calc(100vw - 70px)' : '500px',
 					padding: '16px',
 				}}
 			>

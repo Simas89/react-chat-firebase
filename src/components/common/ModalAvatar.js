@@ -18,7 +18,10 @@ import firebase from 'config/firebase';
 const StyledPaper = styled(Paper)`
 	position: relative;
 	background-color: white;
-	/* width: 500px; */
+	width: 500px;
+	${(p) => p.theme.breakpoints.down('sm')} {
+		width: calc(100vw - 70px);
+	}
 	padding: 16px;
 
 	.preview-image-container {
@@ -96,7 +99,7 @@ export const ModalAvatar = ({ setIsModal }) => {
 			contentType: 'image/jpeg',
 		};
 		storageRef
-			.child(`avatars/user-${userRef.currentUser.uid}.png`)
+			.child(`avatars/user/${userRef.currentUser.uid}.png`)
 			.put(blob, metadata)
 			.then((snap) =>
 				snap.ref

@@ -8,6 +8,7 @@ import {
 	Button,
 	Dialog,
 	Box,
+	useMediaQuery,
 } from '@material-ui/core';
 
 export const ModalChannels = ({ setOpen, channelsRef }) => {
@@ -15,6 +16,7 @@ export const ModalChannels = ({ setOpen, channelsRef }) => {
 	const [name, setName] = React.useState('');
 	const [about, setAbout] = React.useState('');
 	const currentUser = useSelector((state) => state.user.currentUser);
+	const smallScreen = useMediaQuery('(max-width:600px)');
 
 	const nameMax = 30;
 	const aboutMax = 400;
@@ -71,7 +73,7 @@ export const ModalChannels = ({ setOpen, channelsRef }) => {
 			<Paper
 				style={{
 					backgroundColor: 'white',
-					width: '500px',
+					width: smallScreen ? 'calc(100vw - 70px)' : '500px',
 					padding: '16px',
 				}}
 			>
@@ -83,7 +85,7 @@ export const ModalChannels = ({ setOpen, channelsRef }) => {
 						<TextField
 							onChange={(e) => {
 								if (
-									e.target.value.match(/^(?!\s)[a-zA-Z0-9]*$/) &&
+									e.target.value.match(/(?!\s)[a-zA-Z0-9]*$/) &&
 									e.target.value.length <= nameMax
 								)
 									setName(e.target.value);

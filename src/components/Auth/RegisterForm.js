@@ -9,6 +9,7 @@ import {
 	Box,
 	Typography,
 	CircularProgress,
+	useMediaQuery,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -42,6 +43,7 @@ const RegisterForm = () => {
 	const [isPassword2Error, setIsPassword2Error] = React.useState(false);
 	const [serverError, setServerError] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
+	const smallScreen = useMediaQuery('(max-width:600px)');
 
 	const formInputs = useSelector((state) => state.formInputs);
 	const { name, email } = formInputs;
@@ -104,7 +106,7 @@ const RegisterForm = () => {
 				.then((newUser) => {
 					newUser.user
 						.updateProfile({
-							displayName: name,
+							displayName: name.trim(),
 							photoURL: `https://gravatar.com/avatar/${md5(
 								name
 							)}?d=robohash`,
@@ -143,7 +145,7 @@ const RegisterForm = () => {
 			<TextField
 				onChange={(e) => {
 					if (
-						e.target.value.match(/^(?!\s)[a-zA-Z0-9]*$/) &&
+						e.target.value.match(/(?!\s)[a-zA-Z0-9]*$/) &&
 						e.target.value.length <= nameMax
 					)
 						dispatch({
@@ -163,8 +165,9 @@ const RegisterForm = () => {
 					isNameError
 						? `User name should be at least ${nameMin} characters`
 						: isNameTooLong &&
-						  `User name should be no longer than ${nameMin} characters `
+						  `User name should be no longer than ${nameMax} characters `
 				}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 			<TextField
 				onChange={(e) => {
@@ -183,6 +186,7 @@ const RegisterForm = () => {
 				label="Email"
 				error={isEmailError}
 				helperText={isEmailError && 'Email is not valid'}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 			<TextField
 				onChange={(e) => {
@@ -217,6 +221,7 @@ const RegisterForm = () => {
 				helperText={
 					isPasswordError && `Password should be at least 6 characters`
 				}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 
 			<TextField
@@ -250,6 +255,7 @@ const RegisterForm = () => {
 				label="Confirm password"
 				error={isPassword2Error}
 				helperText={isPassword2Error && 'Passwords do not match'}
+				size={smallScreen ? 'small' : 'medium'}
 			/>
 			<Box
 				width="100%"
@@ -259,7 +265,7 @@ const RegisterForm = () => {
 			>
 				<Button
 					className="btn"
-					style={{ height: '50px' }}
+					style={{ height: smallScreen ? '35px' : '50px' }}
 					type="submit"
 					variant="contained"
 					color="primary"
@@ -273,7 +279,11 @@ const RegisterForm = () => {
 						/>
 					)}
 				</Button>
-				<Typography>
+				<Typography
+					style={{
+						textAlign: 'right',
+					}}
+				>
 					Already a user?{' '}
 					<StyledLink to="/auth/login">
 						<strong>Login</strong>
