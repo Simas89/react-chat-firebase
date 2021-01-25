@@ -14,6 +14,7 @@ const StyledDiv = styled.div`
 	margin: 0px 8px 4px 0;
 	padding: 8px;
 	display: flex;
+	/* border: 1px solid red; */
 
 	${(p) =>
 		p.isOwnMessage &&
@@ -59,14 +60,13 @@ const StyledDiv = styled.div`
 		}
 	}
 	.image-card {
-		/* position: relative; */
 		margin-top: 6px;
 		overflow: hidden;
 		border: 1px solid rgba(0, 0, 0, 0.2);
 		border-radius: 3px;
 		min-width: 200px;
 
-		max-width: calc(100%);
+		max-width: 100%;
 
 		img {
 			max-width: 100%;
@@ -147,7 +147,7 @@ const Message = ({ currentUser, message, triggerScrollDown }) => {
 					{message.image && (
 						<div
 							className={'image-card'}
-							style={{ width: `${message.image.imgSize.width}px` }}
+							// style={{ width: `${message.image.imgSize.width}px` }}
 						>
 							{!isImageLoaded && (
 								<Skeleton
